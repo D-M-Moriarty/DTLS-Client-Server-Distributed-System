@@ -1,5 +1,7 @@
 package com.darren.ca;
 
+import com.darren.ca.client.MyClientDatagramSocket;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -16,7 +18,7 @@ public class EchoClientHelper1 {
     private InetAddress serverHost;
     private int serverPort;
 
-    EchoClientHelper1(String hostName, String portNum)
+    public EchoClientHelper1(String hostName, String portNum)
             throws SocketException, UnknownHostException {
         this.serverHost = InetAddress.getByName(hostName);
         this.serverPort = Integer.parseInt(portNum);

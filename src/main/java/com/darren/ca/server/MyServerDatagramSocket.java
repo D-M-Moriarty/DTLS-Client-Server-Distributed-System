@@ -1,4 +1,6 @@
-package com.darren.ca;
+package com.darren.ca.server;
+
+import com.darren.ca.DatagramMessage;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -16,7 +18,7 @@ import java.net.SocketException;
 public class MyServerDatagramSocket extends DatagramSocket {
     static final int MAX_LEN = 100;
 
-    MyServerDatagramSocket(int portNo) throws SocketException {
+    public MyServerDatagramSocket(int portNo) throws SocketException {
         super(portNo);
     }
 
