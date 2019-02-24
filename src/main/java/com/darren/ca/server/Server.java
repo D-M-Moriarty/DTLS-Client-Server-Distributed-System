@@ -1,16 +1,28 @@
 package com.darren.ca.server;
 
 import com.darren.ca.DatagramMessage;
+import com.darren.ca.server.factory.RequestFactory;
 
 import java.io.IOException;
 
 public class Server {
+    private static Server server = new Server();
+    private RequestFactory requestFactory;
+    private ClientRequest clientRequest;
 
-    public void start(String[] port) {
-        int serverPort = 7;    // default port
-        if (port.length == 1)
-            serverPort = Integer.parseInt(port[0]);
-        connect(serverPort);
+    private Server() {
+    }
+
+    static Server getServer() {
+        return server;
+    }
+
+    void start(String[] port, RequestFactory requestFactory) {
+        this.requestFactory = requestFactory;
+        if (port.length == 1) {
+            int serverPort = Integer.parseInt(port[0]);
+            connect(serverPort);
+        }
     }
 
     public void start() {
@@ -20,16 +32,13 @@ public class Server {
 
     private void connect(int serverPort) {
         try {
-            // instantiates a datagram socket for both sending
-            // and receiving data
             MyServerDatagramSocket mySocket = new MyServerDatagramSocket(serverPort);
             System.out.println("Echo server ready.");
-
             waitForRequests(mySocket);
-            return;
+
         } catch (Exception ex) {
             ex.printStackTrace();
-        } // end catch
+        }
     }
 
     private void waitForRequests(MyServerDatagramSocket mySocket) throws IOException {
@@ -38,7 +47,8 @@ public class Server {
             System.out.println("Request received");
             String message = request.getMessage().trim();
 
-            handleRequest(message);
+            clientRequest = requestFactory.getClientRequest(message);
+            clientRequest.handleRequest(message);
 
             System.out.println("message received: " + message);
             // Now send the echo to the requestor
@@ -47,11 +57,4 @@ public class Server {
         } while (true);
     }
 
-    private void handleRequest(String message) {
-        if ("login".equals(message)) {
-            System.out.println("Attempt Login");
-        } else if ("logout".equals(message)) {
-            System.out.println("Logout of system");
-        }
-    }
 }
