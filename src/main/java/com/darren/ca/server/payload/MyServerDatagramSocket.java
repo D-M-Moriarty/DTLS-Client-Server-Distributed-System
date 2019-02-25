@@ -1,4 +1,4 @@
-package com.darren.ca.server;
+package com.darren.ca.server.payload;
 
 import com.darren.ca.DatagramMessage;
 
@@ -24,7 +24,8 @@ public class MyServerDatagramSocket extends DatagramSocket {
 
     public void sendMessage(InetAddress receiverHost, int receiverPort, String message) throws IOException {
         byte[] sendBuffer = message.getBytes();
-        DatagramPacket datagram = new DatagramPacket(sendBuffer, sendBuffer.length, receiverHost, receiverPort);
+        DatagramPacket datagram = new DatagramPacket(sendBuffer, sendBuffer.length,
+                receiverHost, receiverPort);
         this.send(datagram);
     } // end sendMessage
 

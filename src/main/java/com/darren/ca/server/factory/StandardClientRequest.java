@@ -1,10 +1,6 @@
 package com.darren.ca.server.factory;
 
-import com.darren.ca.server.ClientRequest;
-import com.darren.ca.server.service.FileDownloadService;
-import com.darren.ca.server.service.FileUploadService;
-import com.darren.ca.server.service.LoginService;
-import com.darren.ca.server.service.LogoutService;
+import com.darren.ca.server.service.*;
 
 public class StandardClientRequest extends RequestFactory {
     protected ClientRequest createClientRequest(String request) {
