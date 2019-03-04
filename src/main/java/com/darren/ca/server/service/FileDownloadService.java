@@ -1,8 +1,9 @@
 package com.darren.ca.server.service;
 
 public class FileDownloadService implements ClientRequest {
-    public void handleRequest(String request) {
+    public int handleRequest(String request) {
         downloadFile();
+        return 0;
     }
 
     private void downloadFile() {

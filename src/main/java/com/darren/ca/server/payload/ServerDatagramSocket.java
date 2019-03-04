@@ -1,6 +1,7 @@
 package com.darren.ca.server.payload;
 
 import com.darren.ca.DatagramMessage;
+import com.darren.ca.server.model.DataPacket;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -16,7 +17,7 @@ public class ServerDatagramSocket implements ServerSocketDatagram {
         this.socket = new DatagramSocket(port);
     }
 
-    public DatagramMessage receiveMessageAndSender() throws IOException {
+    public DataPacket receiveMessageAndSender() throws IOException {
         byte[] receiveBuffer = new byte[MAX_LEN];
         DatagramPacket datagram = new DatagramPacket(receiveBuffer, MAX_LEN);
         socket.receive(datagram);
@@ -24,7 +25,7 @@ public class ServerDatagramSocket implements ServerSocketDatagram {
         returnVal.putVal(new String(receiveBuffer),
                 datagram.getAddress(),
                 datagram.getPort());
-        return returnVal;
+        return new DataPacket(datagram.getAddress(), datagram.getPort(), new String(receiveBuffer));
     }
 
     public void sendFile(InetAddress receiverHost, int receiverPort, byte[] file) throws IOException {

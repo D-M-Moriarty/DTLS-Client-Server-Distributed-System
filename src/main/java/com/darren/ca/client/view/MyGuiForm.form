@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.darren.ca.client.view.MyGuiForm">
+  <grid id="27dc6" binding="rootPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+    <constraints>
+      <xy x="20" y="20" width="1200" height="600"/>
+    </constraints>
+    <properties>
+      <autoscrolls value="true"/>
+      <background color="-1118482"/>
+      <minimumSize width="1200" height="600"/>
+      <preferredSize width="1200" height="600"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="f3304" binding="topPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+        <constraints/>
+        <properties>
+          <background color="-1118482"/>
+          <doubleBuffered value="false"/>
+          <foreground color="-5427916"/>
+          <minimumSize width="1150" height="40"/>
+          <preferredSize width="1150" height="40"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="94f50" class="javax.swing.JLabel" binding="hostJLabel">
+            <constraints/>
+            <properties>
+              <text value="Host:"/>
+            </properties>
+          </component>
+          <component id="cf8df" class="javax.swing.JTextField" binding="hostnameTextField">
+            <constraints/>
+            <properties>
+              <columns value="10"/>
+              <horizontalAlignment value="10"/>
+              <minimumSize width="116" height="26"/>
+              <preferredSize width="116" height="26"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="915d9" class="javax.swing.JLabel" binding="usernameJLabel">
+            <constraints/>
+            <properties>
+              <maximumSize width="1000" height="16"/>
+              <text value="Username:"/>
+            </properties>
+          </component>
+          <component id="2de22" class="javax.swing.JTextField" binding="usernameTextField">
+            <constraints/>
+            <properties>
+              <minimumSize width="116" height="26"/>
+              <preferredSize width="116" height="26"/>
+            </properties>
+          </component>
+          <component id="b473e" class="javax.swing.JLabel" binding="passwordJLabel">
+            <constraints/>
+            <properties>
+              <text value="Password:"/>
+            </properties>
+          </component>
+          <component id="250ba" class="javax.swing.JPasswordField" binding="passwordField">
+            <constraints/>
+            <properties>
+              <minimumSize width="116" height="22"/>
+              <preferredSize width="116" height="22"/>
+            </properties>
+          </component>
+          <component id="856fa" class="javax.swing.JButton" binding="connectBtn">
+            <constraints/>
+            <properties>
+              <text value="Connect"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="13879" binding="outputPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="49b65" class="javax.swing.JTextArea" binding="serverOutputTxtArea">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="50"/>
+              </grid>
+            </constraints>
+            <properties>
+              <minimumSize width="1150" height="200"/>
+              <opaque value="true"/>
+              <preferredSize width="1150" height="200"/>
+              <rows value="5"/>
+              <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="bd281" binding="splitPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints/>
+        <properties>
+          <minimumSize width="1150" height="54"/>
+          <preferredSize width="1150" height="224"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <splitpane id="b2dda">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="200"/>
+              </grid>
+            </constraints>
+            <properties>
+              <continuousLayout value="false"/>
+              <dividerLocation value="0"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </splitpane>
+          <vspacer id="2087b">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

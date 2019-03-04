@@ -1,6 +1,6 @@
 package com.darren.ca.server;
 
-import com.darren.ca.server.factory.StandardClientRequest;
+import com.darren.ca.server.factory.StandardServerRequest;
 
 public class StartServer {
     private StartServer() {
@@ -8,6 +8,6 @@ public class StartServer {
 
     public static void main(String[] args) {
         Server server = Server.getServer();
-        server.start(args, new StandardClientRequest());
+        server.start(new StandardServerRequest());
     }
 }

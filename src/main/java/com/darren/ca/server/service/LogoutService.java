@@ -1,8 +1,9 @@
 package com.darren.ca.server.service;
 
 public class LogoutService implements ClientRequest {
-    public void handleRequest(String request) {
+    public int handleRequest(String request) {
         logout();
+        return 0;
     }
 
     private void logout() {
