@@ -15,14 +15,13 @@ public class FileTransferClientService implements ClientService {
     public FileTransferClientService(String serverHost, int serverPort) throws SocketException, UnknownHostException {
         this.datagramSocket = new ClientDatagramSocket();
         this.serverHost = InetAddress.getByName(serverHost);
-        ;
         this.serverPort = serverPort;
     }
 
     @Override
     public String sendClientRequest(String request) {
         try {
-            datagramSocket.sendDatagramPacket(serverHost, serverPort, request);
+            datagramSocket.sendDatagramMessage(serverHost, serverPort, request);
             return datagramSocket.receiveServerResponse();
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,6 +29,18 @@ public class FileTransferClientService implements ClientService {
         return "";
     }
 
+    @Override
+    public String sendFileData(byte[] fileBytes) {
+        try {
+            datagramSocket.sendDatagramPacket(serverHost, serverPort, fileBytes);
+            return datagramSocket.receiveServerResponse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
     public void closeDatagramSocket() {
         datagramSocket.closeSocket();
     }

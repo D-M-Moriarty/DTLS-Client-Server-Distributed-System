@@ -1,5 +1,7 @@
 package com.darren.ca.server.service;
 
+import com.darren.ca.server.payload.Response;
+
 public interface ClientRequest {
-    int handleRequest(String request);
+    Response handleRequest(String request);
 }

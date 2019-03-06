@@ -15,11 +15,17 @@ public class ClientDatagramSocket implements ClientSocketDatagram {
     }
 
     @Override
-    public void sendDatagramPacket(InetAddress receiverHost, int receiverPort, String message)
+    public void sendDatagramMessage(InetAddress receiverHost, int receiverPort, String message)
             throws IOException {
         byte[] sendBuffer = message.getBytes();
+        sendDatagramPacket(receiverHost, receiverPort, sendBuffer);
+    }
+
+    @Override
+    public void sendDatagramPacket(InetAddress receiverHost, int receiverPort, byte[] data)
+            throws IOException {
         DatagramPacket datagram = new DatagramPacket(
-                sendBuffer, sendBuffer.length, receiverHost, receiverPort
+                data, data.length, receiverHost, receiverPort
         );
         datagramSocket.send(datagram);
     }

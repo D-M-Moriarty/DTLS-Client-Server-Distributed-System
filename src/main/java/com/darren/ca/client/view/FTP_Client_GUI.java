@@ -5,8 +5,9 @@ import com.darren.ca.client.FileTransferClient;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
-public class MyGuiForm {
+public class FTP_Client_GUI {
     private final int WIDTH = 1200;
     private final int HEIGHT = 985;
     private JTextField hostnameTextField;
@@ -21,10 +22,13 @@ public class MyGuiForm {
     private JTextArea serverOutputTxtArea;
     private JPanel outputPanel;
     private JPanel splitPanel;
+    private JButton logoutBtn;
+    private JButton chooseFileBtn;
+    private JButton downloadBtn;
     private JFrame jFrame;
     private Client client;
 
-    public MyGuiForm(FileTransferClient fileTransferClient) {
+    public FTP_Client_GUI(FileTransferClient fileTransferClient) {
         client = fileTransferClient;
         jFrame = new JFrame("FTP Server");
         jFrame.add(rootPanel);
@@ -43,6 +47,23 @@ public class MyGuiForm {
                         String.valueOf(passwordField.getPassword())
                 )
         );
+        logoutBtn.addActionListener(e ->
+                client.logout(
+                        usernameTextField.getText(),
+                        String.valueOf(passwordField.getPassword())
+                )
+        );
+        chooseFileBtn.addActionListener(e -> {
+            final JFileChooser fc = new JFileChooser();
+            int returnVal = fc.showOpenDialog(this.jFrame);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                client.uploadFile(file);
+            }
+
+        });
+        downloadBtn.addActionListener(e -> client.downloadFile());
     }
 
 }

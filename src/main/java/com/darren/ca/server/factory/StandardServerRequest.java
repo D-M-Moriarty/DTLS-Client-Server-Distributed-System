@@ -5,6 +5,7 @@ import com.darren.ca.server.service.*;
 import static com.darren.ca.server.constants.RequestProtocol.*;
 
 public class StandardServerRequest extends RequestFactory {
+    @Override
     protected ClientRequest createClientRequest(short requestCode) {
         switch (requestCode) {
             case LOGIN:

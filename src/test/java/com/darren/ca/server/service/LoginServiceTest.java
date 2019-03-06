@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LoginServiceTest {
 
-    private LoginService loginService;
+    private AuthService authService;
 
     @BeforeEach
     void setUp() {
@@ -22,25 +22,25 @@ class LoginServiceTest {
     }
 
     @Test
-    public void extractUsernameTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void extractUsernameTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method extractUsername
-                = LoginService.class.getDeclaredMethod("extractUsername", String.class);
+                = AuthService.class.getDeclaredMethod("extractUsername", String.class);
         extractUsername.setAccessible(true);
 
-        loginService = new LoginService();
-        String result = (String) extractUsername.invoke(loginService, "<darren><12345>");
+        authService = new LoginService();
+        String result = (String) extractUsername.invoke(authService, "<darren><12345>");
 
         assertEquals("darren", result);
     }
 
     @Test
-    public void extractPasswordTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void extractPasswordTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method extractPassword
-                = LoginService.class.getDeclaredMethod("extractPassword", String.class);
+                = AuthService.class.getDeclaredMethod("extractPassword", String.class);
         extractPassword.setAccessible(true);
 
-        loginService = new LoginService();
-        String result = (String) extractPassword.invoke(loginService, "<darren><12345>");
+        authService = new LoginService();
+        String result = (String) extractPassword.invoke(authService, "<darren><12345>");
 
         assertEquals("12345", result);
     }
