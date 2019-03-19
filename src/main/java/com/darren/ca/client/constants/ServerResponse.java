@@ -11,6 +11,7 @@ public final class ServerResponse {
     public static final short FILE_UPLOAD_FAILED = 108;
     public static final short FILE_DOWNLOAD_SUCCESS = 109;
     public static final short FILE_DOWNLOAD_FAILED = 110;
+    public static final short PLEASE_LOGIN = 111;
 
     private ServerResponse() {
     }

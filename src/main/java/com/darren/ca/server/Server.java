@@ -54,7 +54,7 @@ public class Server {
             String payload = requestData.getPayload();
 
             ClientRequest clientRequest = requestFactory.getClientRequest(operationCode);
-            Response response = clientRequest.handleRequest(payload);
+            Response response = clientRequest.handleRequest(requestData);
 
             System.out.println("message received: " + requestData.getMessage());
             mySocket.sendFile(requestData.getHost(), requestData.getPort(), response.getResponseBytes());

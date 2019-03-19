@@ -12,6 +12,13 @@ public class Response {
                 String.valueOf(responseCode).getBytes();
     }
 
+    private Response() {
+    }
+
+    public static Response initializeResponse() {
+        return new Response();
+    }
+
     public void setFileData(byte[] fileData) {
         this.fileData = fileData;
     }

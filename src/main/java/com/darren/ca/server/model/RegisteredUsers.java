@@ -19,7 +19,7 @@ public class RegisteredUsers {
         return registered;
     }
 
-    public User checkRegisteredUser(String username) {
+    public static User checkForRegisteredUser(String username) {
         return registered.get(username);
     }
 }
