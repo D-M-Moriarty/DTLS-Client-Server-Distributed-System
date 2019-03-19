@@ -14,6 +14,7 @@ import static com.darren.ca.server.utils.Regex.*;
 public class FileUploadService implements ClientRequest {
     private static final String OUTPUT_DESTINATION = "/Users/darrenmoriarty/Desktop/";
     private static final String DESTINATION_FOLDER = "TEST_FOLDER_FTP";
+    private String userFolder;
     private int responseCode = FILE_UPLOAD_FAILED;
 
     @Override

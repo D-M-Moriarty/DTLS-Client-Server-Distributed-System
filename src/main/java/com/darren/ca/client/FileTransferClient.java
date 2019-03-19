@@ -35,43 +35,35 @@ public class FileTransferClient implements Client {
             e.printStackTrace();
         }
         short response = makeAuthRequest(username, password, LOGIN);
-        getServerResponse(response);
+        String serverResponse = getServerResponse(response);
+        System.out.println(serverResponse);
         return response;
     }
 
-    private void getServerResponse(short response) {
+    private String getServerResponse(short response) {
         switch (response) {
             case SUCCESSFUL_LOGIN:
-                System.out.println("you logged in");
-                break;
+                return "you logged in";
             case UNKNOWN_USER:
-                System.out.println(" Username not in system");
-                break;
+                return " Username not in system";
             case VALID_USER_INVALID_PASSWORD:
-                System.out.println("invalid password");
-                break;
+                return "invalid password";
             case USER_ALREADY_LOGGED_IN:
-                System.out.println("Already Logged in");
-                break;
+                return "Already Logged in";
             case USER_LOGGED_OUT:
-                System.out.println("you logged out");
-                break;
+                return "you logged out";
             case USER_NOT_LOGGED_IN:
-                System.out.println("no user with those credentials are logged in");
-                break;
+                return "no user with those credentials are logged in";
             case FILE_UPLOAD_FAILED:
-                System.out.println("Failed to upload file");
-                break;
+                return "Failed to upload file";
             case FILE_UPLOAD_SUCCESSFUL:
-                System.out.println("File upload successful");
-                break;
+                return "File upload successful";
             case FILE_DOWNLOAD_FAILED:
-                System.out.println("THe download failed");
-                break;
+                return "The download failed";
             case FILE_DOWNLOAD_SUCCESS:
-                System.out.println("THe download is complete");
+                return "The download is complete";
             default:
-                break;
+                return "";
         }
     }
 
@@ -82,7 +74,8 @@ public class FileTransferClient implements Client {
     @Override
     public short logout(String username, String password) {
         short response = makeAuthRequest(username, password, LOGOUT);
-        getServerResponse(response);
+        String serverResponse = getServerResponse(response);
+        System.out.println(serverResponse);
         return response;
     }
 
@@ -97,10 +90,9 @@ public class FileTransferClient implements Client {
 
     @Override
     public short uploadFile(File file) {
-        String protocol_filename_length = UPLOAD + "{" + file.getName() + "}" + "[" +
-                file.length() + "]";
-        System.out.println(protocol_filename_length);
-        byte[] pflBytes = protocol_filename_length.getBytes();
+        String protocolFilenameLength = UPLOAD + "{" + file.getName() + "}" + "[" + file.length() + "]";
+        System.out.println(protocolFilenameLength);
+        byte[] pflBytes = protocolFilenameLength.getBytes();
         try {
             Path path = file.toPath();
             System.out.println(path);
@@ -116,7 +108,8 @@ public class FileTransferClient implements Client {
             System.out.println(echo);
             short response = Short.parseShort(echo.substring(0, 3));
             System.out.println("The response " + response);
-            getServerResponse(response);
+            String serverResponse = getServerResponse(response);
+            System.out.println(serverResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,7 +145,8 @@ public class FileTransferClient implements Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        getServerResponse(response);
+        String serverResponse = getServerResponse(response);
+        System.out.println(serverResponse);
         return 0;
     }
 }

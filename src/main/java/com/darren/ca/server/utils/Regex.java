@@ -46,9 +46,6 @@ public final class Regex {
     private static String getRegexMatch(String request, String regex, String group) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(request);
-        if (matcher.find()) {
-            return matcher.group(group);
-        }
-        return "no match";
+        return matcher.find() ? matcher.group(group) : "no match";
     }
 }
