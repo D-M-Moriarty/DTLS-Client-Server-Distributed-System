@@ -1,10 +1,10 @@
 package com.darren.ca.server.model;
 
 public class User {
-    String username;
-    String password;
+    private String username;
+    private String password;
 
-    public User(String username, String password) {
+    User(String username, String password) {
         this.username = username;
         this.password = password;
     }

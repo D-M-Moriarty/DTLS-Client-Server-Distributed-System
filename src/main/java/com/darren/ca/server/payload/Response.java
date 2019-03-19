@@ -1,5 +1,8 @@
 package com.darren.ca.server.payload;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 
 public class Response {
@@ -15,6 +18,8 @@ public class Response {
     private Response() {
     }
 
+    @NotNull
+    @Contract(" -> new")
     public static Response initializeResponse() {
         return new Response();
     }
@@ -27,6 +32,7 @@ public class Response {
         this.responseCode = responseCode;
     }
 
+    @Contract(pure = true)
     private boolean hasFile() {
         return fileData != null;
     }

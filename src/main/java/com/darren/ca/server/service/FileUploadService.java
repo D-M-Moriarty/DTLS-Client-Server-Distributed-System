@@ -2,7 +2,9 @@ package com.darren.ca.server.service;
 
 import com.darren.ca.server.model.DataPacket;
 import com.darren.ca.server.model.LoggedInUsers;
+import com.darren.ca.server.model.User;
 import com.darren.ca.server.payload.Response;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,11 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
+import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION;
 import static com.darren.ca.server.utils.Regex.*;
 
 public class FileUploadService implements ClientRequest {
-    private static final String OUTPUT_DESTINATION = "/Users/darrenmoriarty/Desktop/";
-    private static final String DESTINATION_FOLDER = "TEST_FOLDER_FTP";
+
     private String userFolder;
     private int responseCode = FILE_UPLOAD_FAILED;
     private Response response = Response.initializeResponse();
@@ -26,7 +28,7 @@ public class FileUploadService implements ClientRequest {
         String fileData = extractfileData(requestDataPacket.getPayload());
 
         if (LoggedInUsers.userIsLoggedIn(requestDataPacket)) {
-            uploadFile(fileData, fileLength, filename);
+            uploadFile(fileData, fileLength, filename, requestDataPacket);
             response.setResponseCode(responseCode);
         } else {
             responseCode = PLEASE_LOGIN;
@@ -36,9 +38,12 @@ public class FileUploadService implements ClientRequest {
 
     }
 
-    private void uploadFile(String fileData, String fileLength, String filename) {
-        String outputFile = OUTPUT_DESTINATION + DESTINATION_FOLDER + "/" + filename;
-        new File(OUTPUT_DESTINATION + DESTINATION_FOLDER).mkdirs();
+    private void uploadFile(@NotNull String fileData, String fileLength, String filename, DataPacket requestDataPacket) {
+        User user = LoggedInUsers.getLoggedInUser(requestDataPacket);
+        String destFolder = CLIENT_DESTINATION + user.getUsername();
+        String outputFile = destFolder + "/" + filename;
+        new File(destFolder).mkdirs();
+
         try {
             Files.write(Paths.get(outputFile), fileData.getBytes());
             responseCode = FILE_UPLOAD_SUCCESSFUL;

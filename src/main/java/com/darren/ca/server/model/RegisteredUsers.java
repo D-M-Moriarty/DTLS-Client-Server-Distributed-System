@@ -1,11 +1,14 @@
 package com.darren.ca.server.model;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisteredUsers {
-    private static final RegisteredUsers registeredUsers = new RegisteredUsers();
     private static Map<String, User> registered;
+    private static final RegisteredUsers registeredUsers = new RegisteredUsers();
+
 
     private RegisteredUsers() {
         registered = new HashMap<>();
@@ -15,6 +18,7 @@ public class RegisteredUsers {
         registered.put("cat", new User("cat", "213465"));
     }
 
+    @Contract(pure = true)
     public static Map<String, User> getRegisteredUser() {
         return registered;
     }

@@ -4,7 +4,10 @@ import com.darren.ca.client.service.ClientService;
 import com.darren.ca.client.service.FileTransferClientService;
 import com.darren.ca.client.view.FTP_Client_GUI;
 import com.darren.ca.server.utils.Regex;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -16,12 +19,12 @@ import java.util.StringTokenizer;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
 import static com.darren.ca.server.constants.RequestProtocol.*;
-import static com.darren.ca.server.constants.ServerProperties.SERVER_ADDRESS;
-import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
+import static com.darren.ca.server.constants.ServerProperties.*;
 
 public class FileTransferClient implements Client {
     private FTP_Client_GUI guiForm;
     private ClientService clientService;
+    private String username;
 
     FileTransferClient() {
         guiForm = new FTP_Client_GUI(this);
@@ -29,17 +32,17 @@ public class FileTransferClient implements Client {
 
     @Override
     public short login(String username, String password) {
+        this.username = username;
         try {
             clientService = new FileTransferClientService(SERVER_ADDRESS, SERVER_PORT);
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
-        short response = makeAuthRequest(username, password, LOGIN);
-        String serverResponse = getServerResponse(response);
-        System.out.println(serverResponse);
-        return response;
+        return getAuthResponse(username, password, LOGIN);
     }
 
+    @NotNull
+    @Contract(pure = true)
     private String getServerResponse(short response) {
         switch (response) {
             case SUCCESSFUL_LOGIN:
@@ -62,20 +65,29 @@ public class FileTransferClient implements Client {
                 return "The download failed";
             case FILE_DOWNLOAD_SUCCESS:
                 return "The download is complete";
+            case PLEASE_LOGIN:
+                return "Please login to perform this operation";
             default:
                 return "";
         }
     }
 
+    @NotNull
+    @Contract(pure = true)
     private String makeCredentialsString(short protocol, String username, String password) {
         return protocol + "<" + username + ">" + "<" + password + ">";
     }
 
     @Override
     public short logout(String username, String password) {
-        short response = makeAuthRequest(username, password, LOGOUT);
+        return getAuthResponse(username, password, LOGOUT);
+    }
+
+    private short getAuthResponse(String username, String password, short authProcess) {
+        short response = makeAuthRequest(username, password, authProcess);
         String serverResponse = getServerResponse(response);
         System.out.println(serverResponse);
+        guiForm.setServerOutputTxtArea(serverResponse);
         return response;
     }
 
@@ -89,7 +101,12 @@ public class FileTransferClient implements Client {
     }
 
     @Override
-    public short uploadFile(File file) {
+    public short uploadFile() {
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(guiForm.getjFrame());
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return 0;
+        File file = fc.getSelectedFile();
         String protocolFilenameLength = UPLOAD + "{" + file.getName() + "}" + "[" + file.length() + "]";
         System.out.println(protocolFilenameLength);
         byte[] pflBytes = protocolFilenameLength.getBytes();
@@ -109,6 +126,7 @@ public class FileTransferClient implements Client {
             short response = Short.parseShort(echo.substring(0, 3));
             System.out.println("The response " + response);
             String serverResponse = getServerResponse(response);
+            guiForm.setServerOutputTxtArea(serverResponse);
             System.out.println(serverResponse);
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,12 +137,39 @@ public class FileTransferClient implements Client {
 
     @Override
     public short downloadFile() {
-        String download = DOWNLOAD + "nothing";
+        final JFileChooser fc = new JFileChooser(CLIENT_DESTINATION + "/" + username);
+        int returnVal = fc.showOpenDialog(guiForm.getjFrame());
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return 0;
+        File file = fc.getSelectedFile();
+        String download = DOWNLOAD + "{" + file.getName() + "}";
         String echo = clientService.sendClientRequest(download);
         System.out.println(echo);
         short response = Short.parseShort(echo.substring(0, 3));
         String byteString = echo.substring(3);
         byteString = Regex.extractFileBytes(byteString);
+        byte[] b = getBytes(byteString);
+        System.out.println(new String(b));
+
+        writeToDesktop(b);
+        String serverResponse = getServerResponse(response);
+        System.out.println(serverResponse);
+        guiForm.setServerOutputTxtArea(serverResponse);
+        return 0;
+    }
+
+    private void writeToDesktop(byte[] b) {
+        try (FileOutputStream fos = new FileOutputStream("/Users/darrenmoriarty/Desktop/newerTestFile.txt")) {
+            fos.write(b);
+            //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] getBytes(String byteString) {
         List<Integer> list = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(byteString, ", ");
         while (tokenizer.hasMoreElements()) {
@@ -135,18 +180,6 @@ public class FileTransferClient implements Client {
         for (int i = 0; i < list.size(); i++) {
             b[i] = list.get(i).byteValue();
         }
-        System.out.println(new String(b));
-
-        try (FileOutputStream fos = new FileOutputStream("/Users/darrenmoriarty/Desktop/newerTestFile.txt")) {
-            fos.write(b);
-            //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String serverResponse = getServerResponse(response);
-        System.out.println(serverResponse);
-        return 0;
+        return b;
     }
 }

@@ -5,7 +5,6 @@ import com.darren.ca.client.FileTransferClient;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class FTP_Client_GUI {
     private final int WIDTH = 1200;
@@ -53,17 +52,15 @@ public class FTP_Client_GUI {
                         String.valueOf(passwordField.getPassword())
                 )
         );
-        chooseFileBtn.addActionListener(e -> {
-            final JFileChooser fc = new JFileChooser();
-            int returnVal = fc.showOpenDialog(this.jFrame);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                client.uploadFile(file);
-            }
-
-        });
+        chooseFileBtn.addActionListener(e -> client.uploadFile());
         downloadBtn.addActionListener(e -> client.downloadFile());
     }
 
+    public JFrame getjFrame() {
+        return jFrame;
+    }
+
+    public void setServerOutputTxtArea(String text) {
+        serverOutputTxtArea.append(text + "\n");
+    }
 }

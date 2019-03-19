@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
 
-public class Server {
+class Server {
     private static Server server = new Server();
     private RequestFactory requestFactory;
 
@@ -31,7 +31,7 @@ public class Server {
         connect(serverPort);
     }
 
-    public void start(RequestFactory requestFactory) {
+    void start(RequestFactory requestFactory) {
         this.requestFactory = requestFactory;
         connect(SERVER_PORT);
     }

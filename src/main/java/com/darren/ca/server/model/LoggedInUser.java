@@ -1,5 +1,8 @@
 package com.darren.ca.server.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.net.InetAddress;
 
 public class LoggedInUser {
@@ -7,7 +10,7 @@ public class LoggedInUser {
     private int clientPortNum;
     private InetAddress clientIP;
 
-    public LoggedInUser(User user, DataPacket dataPacket) {
+    public LoggedInUser(User user, @NotNull DataPacket dataPacket) {
         this.user = user;
         this.clientIP = dataPacket.getHost();
         this.clientPortNum = dataPacket.getPort();
@@ -17,7 +20,9 @@ public class LoggedInUser {
 
     }
 
-    public static LoggedInUser getNullUser() {
+    @NotNull
+    @Contract(" -> new")
+    static LoggedInUser getNullUser() {
         return new LoggedInUser();
     }
 

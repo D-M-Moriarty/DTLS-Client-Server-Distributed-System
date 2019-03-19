@@ -1,5 +1,8 @@
 package com.darren.ca.server.model;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +10,6 @@ public enum LoggedInUsers {
     INSTANCE;
     private static List<LoggedInUser> usersLoggedIn = new ArrayList<>();
 
-    public static List<LoggedInUser> getUsersLoggedIn() {
-        return usersLoggedIn;
-    }
 
     public static void loginUser(LoggedInUser user) {
         usersLoggedIn.add(user);
@@ -29,7 +29,7 @@ public enum LoggedInUsers {
         return false;
     }
 
-    private static boolean isLoggedInClient(DataPacket dataPacket, LoggedInUser loggedInUser) {
+    private static boolean isLoggedInClient(@NotNull DataPacket dataPacket, @NotNull LoggedInUser loggedInUser) {
         return loggedInUser.getClientIP().equals(dataPacket.getHost()) &&
                 loggedInUser.getClientPortNum() == dataPacket.getPort();
     }
@@ -44,7 +44,7 @@ public enum LoggedInUsers {
         usersLoggedIn.remove(userToRemove);
     }
 
-    private static boolean checkForUser(String username, String password, LoggedInUser loggedInUser) {
+    private static boolean checkForUser(String username, String password, @NotNull LoggedInUser loggedInUser) {
         return loggedInUser.getUser().getUsername().equals(username) &&
                 loggedInUser.getUser().getPassword().equals(password);
     }
@@ -54,5 +54,13 @@ public enum LoggedInUsers {
             if (isLoggedInClient(dataPacket, loggedInUser))
                 return true;
         return false;
+    }
+
+    @Nullable
+    public static User getLoggedInUser(DataPacket dataPacket) {
+        for (LoggedInUser loggedInUser : usersLoggedIn)
+            if (isLoggedInClient(dataPacket, loggedInUser))
+                return loggedInUser.getUser();
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package com.darren.ca.server.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.net.InetAddress;
 
 import static com.darren.ca.server.constants.ServerProperties.OPERATION_INDEX;
@@ -35,7 +37,7 @@ public class DataPacket {
         return operationCode;
     }
 
-    private void setOperationCode(String message) {
+    private void setOperationCode(@NotNull String message) {
         String op = message.substring(0, OPERATION_INDEX);
         operationCode = Short.parseShort(op);
     }
@@ -44,7 +46,7 @@ public class DataPacket {
         return payload;
     }
 
-    private void setPayload(String message) {
+    private void setPayload(@NotNull String message) {
         payload = message.substring(OPERATION_INDEX);
     }
 }
