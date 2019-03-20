@@ -3,12 +3,10 @@ package com.darren.ca.client;
 import com.darren.ca.client.clientstate.Client;
 import com.darren.ca.client.clientstate.LoggedInState;
 import com.darren.ca.client.clientstate.LoggedOutState;
-import com.darren.ca.client.service.ClientService;
 import com.darren.ca.client.view.FTP_Client_GUI;
 
 public class FileTransferClient {
     private FTP_Client_GUI guiForm;
-    private ClientService clientService;
     private String username;
     private Client clientState;
     private Client loggedOutState;
@@ -40,14 +38,6 @@ public class FileTransferClient {
 
     public void setClientState(Client clientState) {
         this.clientState = clientState;
-    }
-
-    public ClientService getClientService() {
-        return clientService;
-    }
-
-    public void setClientService(ClientService clientService) {
-        this.clientService = clientService;
     }
 
     public FTP_Client_GUI getGuiForm() {

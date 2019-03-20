@@ -2,7 +2,6 @@ package com.darren.ca.client.clientstate;
 
 import com.darren.ca.client.FileTransferClient;
 import com.darren.ca.client.service.FileTransferClientService;
-import com.darren.ca.client.view.FTP_Client_GUI;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -21,17 +20,15 @@ public class LoggedOutState extends AbstractState implements Client {
     @Override
     public void login(String username, String password) {
         try {
-            fileTransferClient.setClientService(new FileTransferClientService(SERVER_ADDRESS, SERVER_PORT));
+            clientService = new FileTransferClientService(SERVER_ADDRESS, SERVER_PORT);
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
-        short response = makeAuthRequest(username, password, LOGIN);
-        String serverResponse = getServerResponse(response);
-        System.out.println(serverResponse);
-        notifyUser(serverResponse);
+        short response = processAuthRequest(username, password, LOGIN);
         if (response == SUCCESSFUL_LOGIN)
             fileTransferClient.setClientState(fileTransferClient.getLoggedInState());
     }
+
 
     @Override
     public void logout(String username, String password) {
@@ -48,8 +45,5 @@ public class LoggedOutState extends AbstractState implements Client {
         notifyUser("You must login to do that");
     }
 
-    private void notifyUser(String s) {
-        FTP_Client_GUI gui = fileTransferClient.getGuiForm();
-        gui.setServerOutputTxtArea(s);
-    }
+
 }

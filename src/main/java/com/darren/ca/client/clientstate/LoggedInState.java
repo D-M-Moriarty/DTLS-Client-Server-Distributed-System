@@ -3,6 +3,7 @@ package com.darren.ca.client.clientstate;
 import com.darren.ca.client.FileTransferClient;
 import com.darren.ca.client.view.FTP_Client_GUI;
 import com.darren.ca.server.utils.Regex;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
@@ -18,24 +19,18 @@ import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION
 
 public class LoggedInState extends AbstractState implements Client {
 
-
     public LoggedInState(FileTransferClient fileTransferClient) {
         this.fileTransferClient = fileTransferClient;
     }
 
     @Override
     public void login(String username, String password) {
-        FTP_Client_GUI gui = fileTransferClient.getGuiForm();
-        gui.setServerOutputTxtArea(fileTransferClient.getUsername() + " is already logged in");
+        notifyUser(fileTransferClient.getUsername() + " is already logged in");
     }
 
     @Override
     public void logout(String username, String password) {
-        short response = makeAuthRequest(username, password, LOGOUT);
-        String serverResponse = getServerResponse(response);
-        System.out.println(serverResponse);
-        FTP_Client_GUI gui = fileTransferClient.getGuiForm();
-        gui.setServerOutputTxtArea(serverResponse);
+        short response = processAuthRequest(username, password, LOGOUT);
         if (response == USER_LOGGED_OUT)
             fileTransferClient.setClientState(fileTransferClient.getLoggedOutState());
     }
@@ -48,30 +43,54 @@ public class LoggedInState extends AbstractState implements Client {
         if (returnVal != JFileChooser.APPROVE_OPTION)
             return;
         File file = fc.getSelectedFile();
-        String protocolFilenameLength = UPLOAD + "{" + file.getName() + "}" + "[" + file.length() + "]";
+        String protocolFilenameLength = makeUploadFileName(file);
         System.out.println(protocolFilenameLength);
         byte[] pflBytes = protocolFilenameLength.getBytes();
         try {
-            Path path = file.toPath();
-            System.out.println(path);
-            byte[] dataBytes = Files.readAllBytes(path);
-            System.out.println(dataBytes);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            baos.write(pflBytes);
-            baos.write(dataBytes);
-
-            byte[] combinesBytes = baos.toByteArray();
-            String echo = fileTransferClient.getClientService().sendFileData(combinesBytes);
-            System.out.println(echo);
-            short response = Short.parseShort(echo.substring(0, 3));
-            System.out.println("The response " + response);
-            String serverResponse = getServerResponse(response);
-            gui.setServerOutputTxtArea(serverResponse);
-            System.out.println(serverResponse);
+            short response = getResponse(file, pflBytes);
+            outputResponse(gui, response);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private short getResponse(File file, byte[] pflBytes) throws IOException {
+        byte[] dataBytes = getBytes(file);
+        byte[] combinesBytes = getBytes(pflBytes, dataBytes);
+        return getResponse(combinesBytes);
+    }
+
+    private void outputResponse(FTP_Client_GUI gui, short response) {
+        System.out.println("The response " + response);
+        String serverResponse = getServerResponse(response);
+        gui.setServerOutputTxtArea(serverResponse);
+        System.out.println(serverResponse);
+    }
+
+    private short getResponse(byte[] combinesBytes) throws IOException {
+        String echo = clientService.sendFileData(combinesBytes);
+        System.out.println(echo);
+        return Short.parseShort(echo.substring(0, 3));
+    }
+
+    private byte[] getBytes(byte[] pflBytes, byte[] dataBytes) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos.write(pflBytes);
+        baos.write(dataBytes);
+        return baos.toByteArray();
+    }
+
+    private byte[] getBytes(File file) throws IOException {
+        Path path = file.toPath();
+        System.out.println(path);
+        byte[] dataBytes = Files.readAllBytes(path);
+        System.out.println(dataBytes);
+        return dataBytes;
+    }
+
+    @NotNull
+    private String makeUploadFileName(File file) {
+        return UPLOAD + "{" + file.getName() + "}" + "[" + file.length() + "]";
     }
 
     @Override
@@ -81,20 +100,27 @@ public class LoggedInState extends AbstractState implements Client {
         int returnVal = fc.showOpenDialog(gui.getjFrame());
         if (returnVal != JFileChooser.APPROVE_OPTION)
             return;
-        File file = fc.getSelectedFile();
-        String download = DOWNLOAD + "{" + file.getName() + "}";
-        String echo = fileTransferClient.getClientService().sendClientRequest(download);
+        String echo = getString(fc);
         System.out.println(echo);
         short response = Short.parseShort(echo.substring(0, 3));
         String byteString = echo.substring(3);
         byteString = Regex.extractFileBytes(byteString);
         byte[] b = getBytes(byteString);
         System.out.println(new String(b));
-
         writeToDesktop(b);
+        outPutToGui(gui, response);
+    }
+
+    private void outPutToGui(FTP_Client_GUI gui, short response) {
         String serverResponse = getServerResponse(response);
         System.out.println(serverResponse);
         gui.setServerOutputTxtArea(serverResponse);
+    }
+
+    private String getString(JFileChooser fc) {
+        File file = fc.getSelectedFile();
+        String download = DOWNLOAD + "{" + file.getName() + "}";
+        return clientService.sendClientRequest(download);
     }
 
     private void writeToDesktop(byte[] b) {

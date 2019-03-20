@@ -1,6 +1,8 @@
 package com.darren.ca.client.clientstate;
 
 import com.darren.ca.client.FileTransferClient;
+import com.darren.ca.client.service.ClientService;
+import com.darren.ca.client.view.FTP_Client_GUI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,6 +10,7 @@ import static com.darren.ca.client.constants.ServerResponse.*;
 
 abstract class AbstractState implements Client {
     FileTransferClient fileTransferClient;
+    ClientService clientService;
 
     @NotNull
     @Contract(pure = true)
@@ -46,12 +49,25 @@ abstract class AbstractState implements Client {
         return protocol + "<" + username + ">" + "<" + password + ">";
     }
 
-    short makeAuthRequest(String username, String password, short authProcess) {
+    private short makeAuthRequest(String username, String password, short authProcess) {
         String credentials = makeCredentialsString(authProcess, username, password);
-        String echo = fileTransferClient.getClientService().sendClientRequest(credentials);
+        String echo = clientService.sendClientRequest(credentials);
         System.out.println(echo);
         short response = Short.parseShort(echo.substring(0, 3));
         System.out.println("The response " + response);
+        return response;
+    }
+
+    void notifyUser(String s) {
+        FTP_Client_GUI gui = fileTransferClient.getGuiForm();
+        gui.setServerOutputTxtArea(s);
+    }
+
+    short processAuthRequest(String username, String password, short authProcess) {
+        short response = makeAuthRequest(username, password, authProcess);
+        String serverResponse = getServerResponse(response);
+        System.out.println(serverResponse);
+        notifyUser(serverResponse);
         return response;
     }
 }
