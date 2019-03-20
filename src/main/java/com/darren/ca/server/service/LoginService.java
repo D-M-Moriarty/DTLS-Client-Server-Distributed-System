@@ -18,9 +18,10 @@ public class LoginService extends AuthService {
                 return;
             responseCode = VALID_USER_INVALID_PASSWORD;
 
-            if (isValidUsernameAndPassword(password, user))
+            if (isValidUsernameAndPassword(password, user)) {
                 responseCode = SUCCESSFUL_LOGIN;
-            processLogin(user);
+                processLogin(user);
+            }
         }
     }
 

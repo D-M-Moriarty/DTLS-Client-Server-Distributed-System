@@ -1,6 +1,5 @@
 package com.darren.ca.client.view;
 
-import com.darren.ca.client.Client;
 import com.darren.ca.client.FileTransferClient;
 
 import javax.swing.*;
@@ -25,7 +24,7 @@ public class FTP_Client_GUI {
     private JButton chooseFileBtn;
     private JButton downloadBtn;
     private JFrame jFrame;
-    private Client client;
+    private FileTransferClient client;
 
     public FTP_Client_GUI(FileTransferClient fileTransferClient) {
         client = fileTransferClient;
