@@ -1,5 +1,7 @@
 package com.darren.ca.client.request;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,9 +11,20 @@ import java.net.SocketException;
 public class ClientDatagramSocket implements ClientSocketDatagram {
     private static final int MAX_LENGTH = 100;
     private DatagramSocket datagramSocket;
+    private SSLSocket sslSocket;
 
     public ClientDatagramSocket() throws SocketException {
         datagramSocket = new DatagramSocket();
+    }
+
+    public ClientDatagramSocket(String serverHost, int serverPort) {
+        SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        try {
+            sslSocket = (SSLSocket) sslSocketFactory.createSocket(serverHost, serverPort);
+            sslSocket.startHandshake();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
