@@ -60,7 +60,7 @@ public class LoggedInState extends AbstractState implements Client {
         return getResponse(combinesBytes);
     }
 
-    private void outputResponse(FTP_Client_GUI gui, short response) {
+    private void outputResponse(@NotNull FTP_Client_GUI gui, short response) {
         System.out.println("The response " + response);
         String serverResponse = getServerResponse(response);
         gui.setServerOutputTxtArea(serverResponse);
@@ -68,7 +68,7 @@ public class LoggedInState extends AbstractState implements Client {
     }
 
     private short getResponse(byte[] combinesBytes) throws IOException {
-        String echo = clientService.sendFileData(combinesBytes);
+        String echo = CLIENTSERVICE.sendFileData(combinesBytes);
         System.out.println(echo);
         return Short.parseShort(echo.substring(0, 3));
     }
@@ -80,7 +80,7 @@ public class LoggedInState extends AbstractState implements Client {
         return baos.toByteArray();
     }
 
-    private byte[] getBytes(File file) throws IOException {
+    private byte[] getBytes(@NotNull File file) throws IOException {
         Path path = file.toPath();
         System.out.println(path);
         byte[] dataBytes = Files.readAllBytes(path);
@@ -89,7 +89,7 @@ public class LoggedInState extends AbstractState implements Client {
     }
 
     @NotNull
-    private String makeUploadFileName(File file) {
+    private String makeUploadFileName(@NotNull File file) {
         return UPLOAD + "{" + file.getName() + "}" + "[" + file.length() + "]";
     }
 
@@ -111,16 +111,16 @@ public class LoggedInState extends AbstractState implements Client {
         outPutToGui(gui, response);
     }
 
-    private void outPutToGui(FTP_Client_GUI gui, short response) {
+    private void outPutToGui(@NotNull FTP_Client_GUI gui, short response) {
         String serverResponse = getServerResponse(response);
         System.out.println(serverResponse);
         gui.setServerOutputTxtArea(serverResponse);
     }
 
-    private String getString(JFileChooser fc) {
+    private String getString(@NotNull JFileChooser fc) {
         File file = fc.getSelectedFile();
         String download = DOWNLOAD + "{" + file.getName() + "}";
-        return clientService.sendClientRequest(download);
+        return CLIENTSERVICE.sendClientRequest(download);
     }
 
     private void writeToDesktop(byte[] b) {

@@ -10,7 +10,7 @@ import static com.darren.ca.client.constants.ServerResponse.*;
 
 abstract class AbstractState implements Client {
     FileTransferClient fileTransferClient;
-    ClientService clientService;
+    static ClientService CLIENTSERVICE;
 
     @NotNull
     @Contract(pure = true)
@@ -51,7 +51,7 @@ abstract class AbstractState implements Client {
 
     private short makeAuthRequest(String username, String password, short authProcess) {
         String credentials = makeCredentialsString(authProcess, username, password);
-        String echo = clientService.sendClientRequest(credentials);
+        String echo = CLIENTSERVICE.sendClientRequest(credentials);
         System.out.println(echo);
         short response = Short.parseShort(echo.substring(0, 3));
         System.out.println("The response " + response);
