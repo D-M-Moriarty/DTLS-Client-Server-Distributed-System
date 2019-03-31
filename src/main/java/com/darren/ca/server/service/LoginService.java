@@ -8,8 +8,10 @@ import org.jetbrains.annotations.Contract;
 import static com.darren.ca.client.constants.ServerResponse.*;
 
 public class LoginService extends AuthService {
+    //    implemented template method
     @Override
     protected void userAction(String username, String password) {
+//        let the client know if the user is already logged into the server
         if (LoggedInUsers.userIsLoggedIn(username, password)) {
             responseCode = USER_ALREADY_LOGGED_IN;
         } else {
@@ -20,6 +22,7 @@ public class LoginService extends AuthService {
 
             if (isValidUsernameAndPassword(password, user)) {
                 responseCode = SUCCESSFUL_LOGIN;
+//                log the user in
                 processLogin(user);
             }
         }

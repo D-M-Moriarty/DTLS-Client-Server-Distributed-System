@@ -34,7 +34,7 @@ public class SslSocketClient {
             while ((m = r.readLine()) != null) {
                 out.println(m);
                 m = in.readLine();
-                w.write(m, 0, m.length());
+                w.write("cats", 0, 4);
                 w.newLine();
                 w.flush();
             }

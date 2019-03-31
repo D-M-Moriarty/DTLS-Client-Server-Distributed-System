@@ -9,7 +9,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class ServerDatagramSocket implements ServerSocketDatagram {
-    private static final int MAX_LEN = 100;
+    //    https://en.wikipedia.org/wiki/User_Datagram_Protocol
+    private static final int MAX_LEN = 65507;
     private DatagramSocket socket;
 
     public ServerDatagramSocket(int port) throws SocketException {
@@ -21,7 +22,7 @@ public class ServerDatagramSocket implements ServerSocketDatagram {
         byte[] receiveBuffer = new byte[MAX_LEN];
         DatagramPacket datagram = new DatagramPacket(receiveBuffer, MAX_LEN);
         socket.receive(datagram);
-        return new DataPacket(datagram.getAddress(), datagram.getPort(), new String(receiveBuffer));
+        return new DataPacket(datagram.getAddress(), datagram.getPort(), new String(datagram.getData()));
     }
 
     @Override

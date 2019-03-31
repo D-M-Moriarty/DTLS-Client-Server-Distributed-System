@@ -38,6 +38,7 @@ public class DataPacket {
     }
 
     private void setOperationCode(@NotNull String message) {
+//        sets the operation code to the first 3 bytes of the message
         String op = message.substring(0, OPERATION_INDEX);
         operationCode = Short.parseShort(op);
     }

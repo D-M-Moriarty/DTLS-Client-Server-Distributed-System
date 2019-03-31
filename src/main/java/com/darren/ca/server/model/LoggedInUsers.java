@@ -3,20 +3,18 @@ package com.darren.ca.server.model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public enum LoggedInUsers {
     INSTANCE;
-    private static List<LoggedInUser> usersLoggedIn = new ArrayList<>();
-
-
+    private static Set<LoggedInUser> usersLoggedIn = new HashSet<>();
     public static void loginUser(LoggedInUser user) {
         usersLoggedIn.add(user);
     }
 
-    private static List<User> getAllLoggedIn() {
-        List<User> users = new ArrayList<>();
+    private static Set<User> getAllLoggedIn() {
+        Set<User> users = new HashSet<>();
         for (LoggedInUser user : usersLoggedIn)
             users.add(user.getUser());
         return users;

@@ -2,13 +2,15 @@ package com.darren.ca.client.clientstate;
 
 import com.darren.ca.client.FileTransferClient;
 import com.darren.ca.client.service.ClientService;
-import com.darren.ca.client.view.FTP_Client_GUI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
 
 abstract class AbstractState implements Client {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractState.class);
     FileTransferClient fileTransferClient;
     static ClientService CLIENTSERVICE;
 
@@ -29,7 +31,7 @@ abstract class AbstractState implements Client {
             case USER_NOT_LOGGED_IN:
                 return "no user with those credentials are logged in";
             case FILE_UPLOAD_FAILED:
-                return "Failed to upload file";
+                return "Failed to upload file - check file size!";
             case FILE_UPLOAD_SUCCESSFUL:
                 return "File upload successful";
             case FILE_DOWNLOAD_FAILED:
@@ -45,28 +47,31 @@ abstract class AbstractState implements Client {
 
     @NotNull
     @Contract(pure = true)
+//    Creates a string to authenticate the user, used for logging in and out
     private String makeCredentialsString(short protocol, String username, String password) {
         return protocol + "<" + username + ">" + "<" + password + ">";
     }
 
+    //    send the authorisation request to the server and interprets the response
     private short makeAuthRequest(String username, String password, short authProcess) {
         String credentials = makeCredentialsString(authProcess, username, password);
         String echo = CLIENTSERVICE.sendClientRequest(credentials);
-        System.out.println(echo);
+        logger.debug(echo);
         short response = Short.parseShort(echo.substring(0, 3));
-        System.out.println("The response " + response);
+        logger.info("The response {}", response);
         return response;
     }
 
+    //    notify the user by updating the text area of the GUI
     void notifyUser(String s) {
-        FTP_Client_GUI gui = fileTransferClient.getGuiForm();
-        gui.setServerOutputTxtArea(s);
+        fileTransferClient.addOutput(s);
     }
 
+    //    process the auth request for the user
     short processAuthRequest(String username, String password, short authProcess) {
         short response = makeAuthRequest(username, password, authProcess);
         String serverResponse = getServerResponse(response);
-        System.out.println(serverResponse);
+        logger.debug(serverResponse);
         notifyUser(serverResponse);
         return response;
     }
