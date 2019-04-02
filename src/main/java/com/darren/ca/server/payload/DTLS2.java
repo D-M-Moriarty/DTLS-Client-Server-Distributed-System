@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
 import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class DTLS2 {
@@ -26,15 +25,16 @@ public class DTLS2 {
     private static String passwd = "123456";
     private static int MAX_HANDSHAKE_LOOPS = 60;
     private static int MAX_APP_READ_LOOPS = 10;
-    private static String keyFilename = pathToStores + "\\" + keyStoreFile;
     private static Exception serverException = null;
 
     private static ByteBuffer serverApp
             = ByteBuffer.wrap("Hi Client, I'm Server".getBytes());
     private static ByteBuffer clientApp
             = ByteBuffer.wrap("Hi Server, I'm Client".getBytes());
+    private static final String trustFilename = "/Users/darrenmoriarty/Desktop/distributedcomputing/src/main/java/com/darren/ca/server/tls/truststore.jks";
+    private static final String keyFilename = "/Users/darrenmoriarty/Development/TestDTLS/src/things/keystore.jks";
 
-    private String keystoreName = KEYSTORE_NAME;
+    private String keystoreName = trustFilename;
 
     public static void main(String[] args) throws Exception {
 

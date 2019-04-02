@@ -3,8 +3,8 @@ package com.darren.ca.server;
 import com.darren.ca.server.factory.RequestFactory;
 import com.darren.ca.server.model.DataPacket;
 import com.darren.ca.server.payload.Response;
-import com.darren.ca.server.payload.ServerDatagramSocket;
 import com.darren.ca.server.payload.ServerSocketDatagram;
+import com.darren.ca.server.payload.Tester;
 import com.darren.ca.server.service.ClientRequest;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -46,12 +46,12 @@ class Server {
     private void connect(int serverPort) {
         try {
             // setting the socket implementation to receive requests i.e. DatagramSocket
-            ServerSocketDatagram mySocket = new ServerDatagramSocket(serverPort);
+            ServerSocketDatagram mySocket = new Tester(serverPort);
             logger.info("Server ready to handle requests");
             // wait for incoming client requests
             waitForRequests(mySocket);
-        } catch (Exception ex) {
-            logger.error("{}", ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -61,14 +61,14 @@ class Server {
         for (; ; ) {
 //          extract DataPacket from socket
             DataPacket requestData = mySocket.receiveMessageAndSender();
-            logger.info("{}", "Request received");
+            logger.info("Request received");
 //          use DataPacket operation code to determine the service the client wants to use
             short operationCode = requestData.getOperationCode();
 //          the appropriate service can be retrieved with the request factory with code
             ClientRequest clientRequest = requestFactory.getClientRequest(operationCode);
 //          the request data is passed to the chosen service, and a response is returned
             Response response = clientRequest.handleRequest(requestData);
-            logger.info("message received: {}", requestData.getMessage());
+            logger.debug("message received: {}", requestData.getMessage());
 //          the service response is then returned to the client
             mySocket.sendFile(requestData.getHost(), requestData.getPort(), response.getResponseBytes());
         }

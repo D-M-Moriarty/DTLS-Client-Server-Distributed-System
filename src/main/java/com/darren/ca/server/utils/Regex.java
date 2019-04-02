@@ -38,7 +38,7 @@ public final class Regex {
     }
 
     public static String extractfileData(String request) {
-        String regex = "\\[\\d*\\](?<data>.*?.*)";
+        String regex = "\\[\\d*\\](?<data>(?s).*?.*)";
         String group = "data";
         return getRegexMatch(request, regex, group);
     }

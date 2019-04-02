@@ -1,7 +1,7 @@
 package com.darren.ca.client.service;
 
 import com.darren.ca.client.FileTransferClient;
-import com.darren.ca.client.request.ClientDatagramSocket;
+import com.darren.ca.client.request.ClientDTLSSocket;
 import com.darren.ca.client.request.ClientSocketDatagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class FileTransferClientService implements ClientService {
     private int serverPort;
 
     public FileTransferClientService(String serverHost, int serverPort) throws SocketException, UnknownHostException {
-        this.datagramSocket = new ClientDatagramSocket();
+        this.datagramSocket = new ClientDTLSSocket();
         this.serverHost = InetAddress.getByName(serverHost);
         this.serverPort = serverPort;
     }

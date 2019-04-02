@@ -18,7 +18,7 @@ import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
 import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
 import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
 
-public class DTLSDocket implements ClientSocketDatagram {
+public class DTLSSocket implements ClientSocketDatagram {
 
     private static final int MAX_LEN = 100;
     private static int MAX_HANDSHAKE_LOOPS = 60;
@@ -35,7 +35,7 @@ public class DTLSDocket implements ClientSocketDatagram {
     private DatagramSocket socket;
     private SSLEngine engine;
 
-    public DTLSDocket() {
+    public DTLSSocket() {
         // Create and initialize the SSLContext with key mat
 
         // First initialize the key and trust material
@@ -86,60 +86,7 @@ public class DTLSDocket implements ClientSocketDatagram {
 
     @Override
     public void sendDatagramMessage(InetAddress receiverHost, int receiverPort, String message) throws IOException {
-        DatagramTransport transport = new UDPTransport(datagramSocket, 1000);
-        TlsClient client = new DefaultTlsClient() {
-            @Override
-            public TlsAuthentication getAuthentication() throws IOException {
-                return null;
-            }
-        };
-        DTLSClientProtocol protocol = new DTLSClientProtocol(new SecureRandom());
-        DTLSTransport dtls = protocol.connect(client, transport);
-        dtls.send(message.getBytes(), 100, 100);
-//
-//        // Create a nonblocking socket channel
-//        SocketChannel socketChannel = SocketChannel.open();
-//        socketChannel.configureBlocking(false);
-//        socketChannel.connect(new InetSocketAddress(receiverHost, receiverPort));
-//
-//        // Complete connection
-//        while (!socketChannel.finishConnect()) {
-//            // do something until connect completed
-//            System.out.println("Connecting");
-//        }
-//
-//        //Create byte buffers for holding application and encoded data
-//
-//        SSLSession session = engine.getSession();
-//        ByteBuffer myAppData = ByteBuffer.allocate(session.getApplicationBufferSize());
-//        ByteBuffer myNetData = ByteBuffer.allocate(session.getPacketBufferSize());
-//        ByteBuffer peerAppData = ByteBuffer.allocate(session.getApplicationBufferSize());
-//        ByteBuffer peerNetData = ByteBuffer.allocate(session.getPacketBufferSize());
-//
-//        // Do initial handshake
-//        engine.beginHandshake();
-//
-//        myAppData.put("hello".getBytes());
-//        myAppData.flip();
-//
-//        while (myAppData.hasRemaining()) {
-//            // Generate SSL/TLS/DTLS encoded data (handshake or application data)
-//            SSLEngineResult res = engine.wrap(myAppData, myNetData);
-//
-//            // Process status of call
-//            if (res.getStatus() == SSLEngineResult.Status.OK) {
-//                myAppData.compact();
-//
-//                // Send SSL/TLS/DTLS encoded data to peer
-//                while(myNetData.hasRemaining()) {
-//                    int num = socketChannel.write(myNetData);
-//                    if (num == 0) {
-//                        // no bytes written; try again later
-//                    }
-//                }
-//            }
-//
-//        }
+
     }
 
     @Override
