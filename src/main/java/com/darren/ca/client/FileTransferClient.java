@@ -13,12 +13,12 @@ import java.util.LinkedList;
 import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION;
 
 public class FileTransferClient implements Client {
-    private FTP_Client_GUI guiForm;
+    private final FTP_Client_GUI guiForm;
     private String username;
     private Client clientState;
-    private Client loggedOutState;
-    private Client loggedInState;
-    private Deque<String> outputs;
+    private final Client loggedOutState;
+    private final Client loggedInState;
+    private final Deque<String> outputs;
 
     FileTransferClient() {
         guiForm = new FTP_Client_GUI(this);

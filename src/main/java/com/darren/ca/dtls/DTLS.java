@@ -10,12 +10,11 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
+import static com.darren.ca.dtls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class DTLS {
     private static final Logger logger = LoggerFactory.getLogger(DTLS.class);
     private static int MAX_HANDSHAKE_LOOPS = 60;
-    private static int MAX_APP_READ_LOOPS = 10;
     private static int BUFFER_SIZE = 65507;
     private static int MAXIMUM_PACKET_SIZE = 65507;
     private static int SOCKET_TIMEOUT = 10 * 1000; // in millis
@@ -37,7 +36,7 @@ public class DTLS {
         }
     }
 
-    final static void printHex(String prefix, byte[] bytes, int offset, int length) {
+    private static void printHex(String prefix, byte[] bytes, int offset, int length) {
         HexDumpEncoder dump = new HexDumpEncoder();
 
         synchronized (System.out) {
@@ -52,7 +51,7 @@ public class DTLS {
         }
     }
 
-    final static void printHex(String prefix, ByteBuffer bb) {
+    private static void printHex(String prefix, ByteBuffer bb) {
         HexDumpEncoder dump = new HexDumpEncoder();
 
         synchronized (System.out) {
@@ -113,6 +112,7 @@ public class DTLS {
             throws Exception {
         byte[] buf = new byte[BUFFER_SIZE];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        int MAX_APP_READ_LOOPS = 10;
         int loops = MAX_APP_READ_LOOPS;
         DTLSReceive dtlsReceive = new DTLSReceive();
 
@@ -399,7 +399,7 @@ public class DTLS {
     }
 
     // produce application packets
-    List<DatagramPacket> produceApplicationPackets(SSLEngine engine, ByteBuffer source, SocketAddress socketAddr)
+    private List<DatagramPacket> produceApplicationPackets(SSLEngine engine, ByteBuffer source, SocketAddress socketAddr)
             throws Exception {
         List<DatagramPacket> packets = new ArrayList<>();
         ByteBuffer appNet = ByteBuffer.allocate(MAXIMUM_PACKET_SIZE);
@@ -433,7 +433,7 @@ public class DTLS {
     }
 
     // produce handshake packets
-    boolean produceHandshakePackets(SSLEngine engine, SocketAddress socketAddr, String side, List<DatagramPacket> packets)
+    private boolean produceHandshakePackets(SSLEngine engine, SocketAddress socketAddr, String side, List<DatagramPacket> packets)
             throws Exception {
         boolean endLoops = false;
         int loops = MAX_HANDSHAKE_LOOPS / 2;
@@ -507,12 +507,12 @@ public class DTLS {
         return false;
     }
 
-    DatagramPacket createHandshakePacket(byte[] ba, SocketAddress socketAddr) {
+    private DatagramPacket createHandshakePacket(byte[] ba, SocketAddress socketAddr) {
         return new DatagramPacket(ba, ba.length, socketAddr);
     }
 
     // retransmission if timeout
-    boolean onReceiveTimeout(SSLEngine engine, SocketAddress socketAddr, String side, List<DatagramPacket> packets) throws Exception {
+    private boolean onReceiveTimeout(SSLEngine engine, SocketAddress socketAddr, String side, List<DatagramPacket> packets) throws Exception {
         SSLEngineResult.HandshakeStatus hs = engine.getHandshakeStatus();
         if (hs == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
             return false;

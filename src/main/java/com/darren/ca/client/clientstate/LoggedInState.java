@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import static com.darren.ca.client.constants.ClientStrings.DESKTOP_DEST;
 import static com.darren.ca.client.constants.ClientStrings.FOLDER_EXT;
@@ -79,10 +76,7 @@ public class LoggedInState extends AbstractState implements Client {
         short response = Short.parseShort(echo.substring(0, OPERATION_INDEX));
 //        extract the bytes to a string
         String byteString = echo.substring(OPERATION_INDEX);
-//        use regex to get the array of bytes
-//        byteString = Regex.extractFileBytes(byteString);
 //        convert the string of bytes to a byte[]
-//        byte[] b = getBytes(byteString);
         byte[] b = byteString.getBytes();
         logger.debug(Arrays.toString(b));
 //        write the file to the users folder
@@ -142,9 +136,9 @@ public class LoggedInState extends AbstractState implements Client {
 
     private byte[] getBytes(@NotNull File file) throws IOException {
         Path path = file.toPath();
-        logger.debug(path.toString());
+        logger.debug(String.valueOf(path));
         byte[] dataBytes = Files.readAllBytes(path);
-        logger.debug(String.valueOf(dataBytes));
+        logger.debug(Arrays.toString(dataBytes));
         return dataBytes;
     }
 
@@ -152,20 +146,6 @@ public class LoggedInState extends AbstractState implements Client {
         String serverResponse = getServerResponse(response);
         logger.info(serverResponse);
         gui.setServerOutputTxtArea(serverResponse);
-    }
-
-    private byte[] getBytes(String byteString) {
-        List<Integer> list = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(byteString, ", ");
-        while (tokenizer.hasMoreElements()) {
-            String val = tokenizer.nextToken().trim();
-            if (!val.isEmpty()) list.add(Integer.parseInt(val));
-        }
-        byte[] b = new byte[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            b[i] = list.get(i).byteValue();
-        }
-        return b;
     }
 
 }

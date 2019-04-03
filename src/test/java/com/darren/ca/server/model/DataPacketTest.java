@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DataPacketTest {
 
     private DataPacket dataPacket;
-    private String loginString = RequestProtocol.LOGIN + "darren123";
 
     @BeforeEach
     void setUp() {
         try {
+            String loginString = RequestProtocol.LOGIN + "darren123";
             dataPacket = new DataPacket(
                     InetAddress.getByName(ServerProperties.SERVER_ADDRESS),
                     ServerProperties.SERVER_PORT,

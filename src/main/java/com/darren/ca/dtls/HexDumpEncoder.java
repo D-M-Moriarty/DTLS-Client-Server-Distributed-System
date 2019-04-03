@@ -9,9 +9,9 @@ public class HexDumpEncoder extends CharacterEncoder {
     private int offset;
     private int thisLineLength;
     private int currentByte;
-    private byte thisLine[] = new byte[16];
+    private byte[] thisLine = new byte[16];
 
-    static void hexDigit(PrintStream p, byte x) {
+    private static void hexDigit(PrintStream p, byte x) {
         char c;
 
         c = (char) ((x >> 4) & 0xf);
@@ -51,7 +51,7 @@ public class HexDumpEncoder extends CharacterEncoder {
     }
 
     @Override
-    protected void encodeAtom(OutputStream o, byte buf[], int off, int len) throws IOException {
+    protected void encodeAtom(OutputStream o, byte[] buf, int off, int len) throws IOException {
         thisLine[currentByte] = buf[off];
         hexDigit(pStream, buf[off]);
         pStream.print(" ");

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
 import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION;
@@ -22,7 +23,7 @@ import static com.darren.ca.server.utils.Regex.extractfileData;
 public class FileUploadService implements ClientRequest {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadService.class);
     private int responseCode = FILE_UPLOAD_UNSUCCESSFUL;
-    private Response response = Response.initializeResponse();
+    private final Response response = Response.initializeResponse();
 
     @Override
     public Response handleRequest(DataPacket requestDataPacket) {
@@ -47,7 +48,7 @@ public class FileUploadService implements ClientRequest {
 //        get the current user
         User user = LoggedInUsers.getLoggedInUser(requestDataPacket);
 //        make a path with a folder of their username
-        String destFolder = CLIENT_DESTINATION + user.getUsername();
+        String destFolder = CLIENT_DESTINATION + Objects.requireNonNull(user).getUsername();
 //        add the file they're uploading to the end of the path
         String outputFile = destFolder + "/" + filename;
 //        make the directory

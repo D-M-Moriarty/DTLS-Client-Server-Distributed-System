@@ -1,13 +1,15 @@
 package com.darren.ca.client.request;
 
 import com.darren.ca.dtls.DTLS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLEngine;
-import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 
 public class ClientDTLSSocket implements ClientSocketDatagram {
+    private static final Logger logger = LoggerFactory.getLogger(ClientDTLSSocket.class);
     private SSLEngine sslEngine;
     private DatagramSocket socket;
     private DTLS dtls;
@@ -18,24 +20,24 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
         try {
             sslEngine = dtls.createSSLEngine(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
     @Override
-    public void sendDatagramMessage(InetAddress receiverHost, int receiverPort, String message) throws IOException {
+    public void sendDatagramMessage(InetAddress receiverHost, int receiverPort, String message) {
         byte[] sendBuffer = message.getBytes();
         sendDatagramPacket(receiverHost, receiverPort, sendBuffer);
     }
 
     @Override
-    public void sendDatagramPacket(InetAddress receiverHost, int receiverPort, byte[] data) throws IOException {
+    public void sendDatagramPacket(InetAddress receiverHost, int receiverPort, byte[] data) {
         SocketAddress serverAddress = new InetSocketAddress(receiverHost, receiverPort);
         dtls = DTLS.createDTLS();
         try {
             sslEngine = dtls.createSSLEngine(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         try {
             dtls.handshake(sslEngine, socket, serverAddress, "Client");
@@ -46,17 +48,17 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
                     serverAddress
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
     @Override
-    public String receiveServerResponse() throws IOException {
+    public String receiveServerResponse() {
         ByteBuffer dataBuffer = ByteBuffer.allocate(65507);
         try {
             dataBuffer = dtls.receiveAppData(sslEngine, socket, null).getByteBuffer();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return dataBuffer == null ? "" : new String(dataBuffer.array()).replaceAll("\0", "");
     }

@@ -9,8 +9,6 @@ import static com.darren.ca.server.constants.ServerProperties.SERVER_ADDRESS;
 import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
 
 public class ClientSSLSocket implements ClientSocketDatagram {
-    private BufferedWriter writer;
-    private BufferedReader reader;
     private SSLSocket sslSocket;
 
     public ClientSSLSocket() {
@@ -26,7 +24,7 @@ public class ClientSSLSocket implements ClientSocketDatagram {
 
     @Override
     public void sendDatagramMessage(InetAddress receiverHost, int receiverPort, String message) throws IOException {
-        writer = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
         writer.write(message, 0, message.length());
         writer.newLine();
         writer.flush();
@@ -40,7 +38,7 @@ public class ClientSSLSocket implements ClientSocketDatagram {
 
     @Override
     public String receiveServerResponse() throws IOException {
-        reader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
         String f = reader.readLine();
         return f;
     }

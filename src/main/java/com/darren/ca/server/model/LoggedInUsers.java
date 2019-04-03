@@ -8,7 +8,7 @@ import java.util.Set;
 
 public enum LoggedInUsers {
     INSTANCE;
-    private static Set<LoggedInUser> usersLoggedIn = new HashSet<>();
+    private static final Set<LoggedInUser> usersLoggedIn = new HashSet<>();
     public static void loginUser(LoggedInUser user) {
         usersLoggedIn.add(user);
     }

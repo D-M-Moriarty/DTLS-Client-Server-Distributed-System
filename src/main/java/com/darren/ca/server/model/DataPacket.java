@@ -7,10 +7,10 @@ import java.net.InetAddress;
 import static com.darren.ca.server.constants.ServerProperties.OPERATION_INDEX;
 
 public class DataPacket {
-    private InetAddress host;
-    private int port;
+    private final InetAddress host;
+    private final int port;
     private short operationCode;
-    private String message;
+    private final String message;
     private String payload;
 
     public DataPacket(InetAddress host, int port, String message) {

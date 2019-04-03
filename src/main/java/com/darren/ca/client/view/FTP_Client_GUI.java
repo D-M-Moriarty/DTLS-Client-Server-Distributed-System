@@ -6,10 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FTP_Client_GUI {
-    private final int WIDTH = 1200;
-    private final int HEIGHT = 500;
-    private final int X_POS;
-    private final int Y_POS;
     private JTextField hostnameTextField;
     private JLabel hostJLabel;
     private JLabel usernameJLabel;
@@ -25,18 +21,20 @@ public class FTP_Client_GUI {
     private JButton logoutBtn;
     private JButton chooseFileBtn;
     private JButton downloadBtn;
-    private JFrame jFrame;
+    private final JFrame jFrame;
 
     public FTP_Client_GUI(Client client) {
         jFrame = new JFrame("FTP Server");
         jFrame.add(rootPanel);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        int WIDTH = 1200;
+        int HEIGHT = 500;
         jFrame.setSize(WIDTH, HEIGHT);
         jFrame.setMinimumSize(new Dimension(850, 500));
-        X_POS = (WIDTH - jFrame.getWidth()) / 2;
-        Y_POS = (HEIGHT - jFrame.getHeight()) / 2;
-        jFrame.setLocation(X_POS, Y_POS);
+        int x_POS = (WIDTH - jFrame.getWidth()) / 2;
+        int y_POS = (HEIGHT - jFrame.getHeight()) / 2;
+        jFrame.setLocation(x_POS, y_POS);
         jFrame.setLayout(new FlowLayout());
         jFrame.setVisible(true);
 //        attach listeners to buttons

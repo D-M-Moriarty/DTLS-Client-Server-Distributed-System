@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
 import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION;
@@ -18,7 +19,7 @@ import static com.darren.ca.server.utils.Regex.extractFilename;
 public class FileDownloadService implements ClientRequest {
     private static final Logger logger = LoggerFactory.getLogger(FileDownloadService.class);
     private int responseCode = FILE_DOWNLOAD_FAILED;
-    private Response response = Response.initializeResponse();
+    private final Response response = Response.initializeResponse();
 
     @Override
     public Response handleRequest(DataPacket requestDataPacket) {
@@ -40,7 +41,7 @@ public class FileDownloadService implements ClientRequest {
 //        get the current user
         User user = LoggedInUsers.getLoggedInUser(requestDataPacket);
 //        get their directory on the server
-        String destFolder = CLIENT_DESTINATION + user.getUsername();
+        String destFolder = CLIENT_DESTINATION + Objects.requireNonNull(user).getUsername();
 //        extract the file name from the client request
         String filename = extractFilename(requestDataPacket.getPayload());
 //        create a file object from the file requested

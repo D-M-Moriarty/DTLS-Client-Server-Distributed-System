@@ -10,12 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
-
 class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
     // Singleton instance
-    private static Server server = new Server();
+    private static final Server server = new Server();
     //    factory for determining the correct services to handle the client requests
     private RequestFactory requestFactory;
 
@@ -61,10 +59,6 @@ class Server {
 //          the service response is then returned to the client
             mySocket.sendFile(requestData.getHost(), requestData.getPort(), response.getResponseBytes());
         }
-    }
-
-    private int setPort(@NotNull String[] port) {
-        return port.length == 1 ? Integer.parseInt(port[0]) : SERVER_PORT;
     }
 
 }

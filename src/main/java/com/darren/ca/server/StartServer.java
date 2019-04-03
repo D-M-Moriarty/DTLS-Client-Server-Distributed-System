@@ -9,7 +9,7 @@ import java.net.SocketException;
 
 import static com.darren.ca.server.constants.ServerProperties.SERVER_PORT;
 
-public class StartServer {
+class StartServer {
     private StartServer() {
     }
 
