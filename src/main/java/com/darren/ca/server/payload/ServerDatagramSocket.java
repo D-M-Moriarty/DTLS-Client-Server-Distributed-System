@@ -22,7 +22,11 @@ public class ServerDatagramSocket implements ServerSocketDatagram {
         byte[] receiveBuffer = new byte[MAX_LEN];
         DatagramPacket datagram = new DatagramPacket(receiveBuffer, MAX_LEN);
         socket.receive(datagram);
-        return new DataPacket(datagram.getAddress(), datagram.getPort(), new String(datagram.getData()));
+        return new DataPacket(
+                datagram.getAddress(),
+                datagram.getPort(),
+                new String(receiveBuffer, 0, datagram.getLength())
+        );
     }
 
     @Override

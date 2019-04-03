@@ -1,6 +1,6 @@
 package com.darren.ca.client.request;
 
-import com.darren.ca.server.payload.DTLS;
+import com.darren.ca.dtls.DTLS;
 
 import javax.net.ssl.SSLEngine;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
 
     public ClientDTLSSocket() throws SocketException {
         this.socket = new DatagramSocket();
-        dtls = new DTLS();
+        dtls = DTLS.createDTLS();
         try {
             sslEngine = dtls.createSSLEngine(true);
         } catch (Exception e) {
@@ -31,7 +31,7 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
     @Override
     public void sendDatagramPacket(InetAddress receiverHost, int receiverPort, byte[] data) throws IOException {
         SocketAddress serverAddress = new InetSocketAddress(receiverHost, receiverPort);
-        dtls = new DTLS();
+        dtls = DTLS.createDTLS();
         try {
             sslEngine = dtls.createSSLEngine(true);
         } catch (Exception e) {
@@ -52,13 +52,13 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
 
     @Override
     public String receiveServerResponse() throws IOException {
-        ByteBuffer dataBuffer = null;
+        ByteBuffer dataBuffer = ByteBuffer.allocate(65507);
         try {
             dataBuffer = dtls.receiveAppData(sslEngine, socket, null).getByteBuffer();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dataBuffer == null ? "" : new String(dataBuffer.array());
+        return dataBuffer == null ? "" : new String(dataBuffer.array()).replaceAll("\0", "");
     }
 
     @Override

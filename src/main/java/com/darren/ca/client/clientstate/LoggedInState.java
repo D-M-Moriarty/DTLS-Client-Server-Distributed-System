@@ -2,7 +2,6 @@ package com.darren.ca.client.clientstate;
 
 import com.darren.ca.client.FileTransferClient;
 import com.darren.ca.client.view.FTP_Client_GUI;
-import com.darren.ca.server.utils.Regex;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,9 +80,10 @@ public class LoggedInState extends AbstractState implements Client {
 //        extract the bytes to a string
         String byteString = echo.substring(OPERATION_INDEX);
 //        use regex to get the array of bytes
-        byteString = Regex.extractFileBytes(byteString);
+//        byteString = Regex.extractFileBytes(byteString);
 //        convert the string of bytes to a byte[]
-        byte[] b = getBytes(byteString);
+//        byte[] b = getBytes(byteString);
+        byte[] b = byteString.getBytes();
         logger.debug(Arrays.toString(b));
 //        write the file to the users folder
         writeToUserFolder(b, file);

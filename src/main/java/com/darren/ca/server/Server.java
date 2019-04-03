@@ -4,7 +4,6 @@ import com.darren.ca.server.factory.RequestFactory;
 import com.darren.ca.server.model.DataPacket;
 import com.darren.ca.server.payload.Response;
 import com.darren.ca.server.payload.ServerSocketDatagram;
-import com.darren.ca.server.payload.Tester;
 import com.darren.ca.server.service.ClientRequest;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -29,29 +28,19 @@ class Server {
         return server;
     }
 
-    //  if the application is started with a specified port
-    void start(String[] port, RequestFactory requestFactory) {
+    void start(RequestFactory requestFactory, ServerSocketDatagram mySocket) {
         this.requestFactory = requestFactory;
-        int serverPort = setPort(port);
-        connect(serverPort);
-    }
-
-    //    default port used for server
-    void start(RequestFactory requestFactory) {
-        this.requestFactory = requestFactory;
-        connect(SERVER_PORT);
+        connect(mySocket);
     }
 
     //   connect server to specified port to accept requests
-    private void connect(int serverPort) {
+    private void connect(ServerSocketDatagram mySocket) {
         try {
-            // setting the socket implementation to receive requests i.e. DatagramSocket
-            ServerSocketDatagram mySocket = new Tester(serverPort);
             logger.info("Server ready to handle requests");
             // wait for incoming client requests
             waitForRequests(mySocket);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

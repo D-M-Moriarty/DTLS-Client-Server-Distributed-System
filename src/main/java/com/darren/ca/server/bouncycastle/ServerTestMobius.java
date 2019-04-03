@@ -6,8 +6,8 @@ import io.netty.buffer.Unpooled;
 import java.net.DatagramSocket;
 import java.security.KeyStore;
 
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_NAME;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class ServerTestMobius {
     private static final String keystorePassword = "GfUNokaofNh6";

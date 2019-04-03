@@ -16,7 +16,8 @@ import java.nio.file.Paths;
 
 import static com.darren.ca.client.constants.ServerResponse.*;
 import static com.darren.ca.server.constants.ServerProperties.CLIENT_DESTINATION;
-import static com.darren.ca.server.utils.Regex.*;
+import static com.darren.ca.server.utils.Regex.extractFilename;
+import static com.darren.ca.server.utils.Regex.extractfileData;
 
 public class FileUploadService implements ClientRequest {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadService.class);
@@ -27,12 +28,11 @@ public class FileUploadService implements ClientRequest {
     public Response handleRequest(DataPacket requestDataPacket) {
 //        extract file name, length and data from request
         String filename = extractFilename(requestDataPacket.getPayload());
-        String fileLength = extractfileLength(requestDataPacket.getPayload());
         String fileData = extractfileData(requestDataPacket.getPayload());
 
         if (LoggedInUsers.userIsLoggedIn(requestDataPacket)) {
 //            if the user is logged in upload the file
-            uploadFile(fileData, fileLength, filename, requestDataPacket);
+            uploadFile(fileData, filename, requestDataPacket);
             response.setResponseCode(responseCode);
         } else {
 //            respond to the client that the user isn't logged in
@@ -43,7 +43,7 @@ public class FileUploadService implements ClientRequest {
 
     }
 
-    private void uploadFile(@NotNull String fileData, String fileLength, String filename, DataPacket requestDataPacket) {
+    private void uploadFile(@NotNull String fileData, String filename, DataPacket requestDataPacket) {
 //        get the current user
         User user = LoggedInUsers.getLoggedInUser(requestDataPacket);
 //        make a path with a folder of their username
@@ -52,7 +52,6 @@ public class FileUploadService implements ClientRequest {
         String outputFile = destFolder + "/" + filename;
 //        make the directory
         new File(destFolder).mkdirs();
-
         try {
 //            write the binary file data to the user's directory
             Files.write(Paths.get(outputFile), fileData.getBytes());

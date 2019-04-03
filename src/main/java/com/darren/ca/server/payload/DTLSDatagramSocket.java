@@ -1,5 +1,7 @@
 package com.darren.ca.server.payload;
 
+import com.darren.ca.dtls.DTLS;
+import com.darren.ca.dtls.DTLSReceive;
 import com.darren.ca.server.model.DataPacket;
 
 import javax.net.ssl.SSLEngine;
@@ -8,7 +10,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 
-public class Tester implements ServerSocketDatagram {
+public class DTLSDatagramSocket implements ServerSocketDatagram {
     private SSLEngine sslEngine;
     private DatagramSocket socket;
     private static ByteBuffer clientApp;
@@ -16,13 +18,13 @@ public class Tester implements ServerSocketDatagram {
     private SSLSession sslSession;
     private DatagramPacket datagramPacket = null;
 
-    public Tester(int port) throws SocketException {
+    public DTLSDatagramSocket(int port) throws SocketException {
         socket = new DatagramSocket(port);
     }
 
     @Override
     public DataPacket receiveMessageAndSender() throws Exception {
-        dtls = new DTLS();
+        dtls = DTLS.createDTLS();
         try {
             sslEngine = dtls.createSSLEngine(false);
             sslSession = sslEngine.getSession();
@@ -36,7 +38,7 @@ public class Tester implements ServerSocketDatagram {
         return new DataPacket(
                 datagramPacket.getAddress(),
                 datagramPacket.getPort(),
-                new String(dtlsReceive.getByteBuffer().array())
+                new String(dtlsReceive.getByteBuffer().array()).replaceAll("\0", "")
         );
     }
 

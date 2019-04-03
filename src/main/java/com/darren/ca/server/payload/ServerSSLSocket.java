@@ -8,8 +8,8 @@ import java.net.InetAddress;
 import java.security.*;
 import java.security.cert.CertificateException;
 
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_NAME;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class ServerSSLSocket implements ServerSocketDatagram {
     private char[] keystorePassword = KEYSTORE_PASSWORD.toCharArray();

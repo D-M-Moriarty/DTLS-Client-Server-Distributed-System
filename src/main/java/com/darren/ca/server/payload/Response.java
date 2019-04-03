@@ -1,9 +1,8 @@
 package com.darren.ca.server.payload;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class Response {
     private int responseCode;
@@ -11,7 +10,7 @@ public class Response {
 
     public byte[] getResponseBytes() {
         return hasFile() ?
-                (responseCode + Arrays.toString(fileData)).getBytes() :
+                ArrayUtils.addAll(Integer.toString(responseCode).getBytes(), fileData) :
                 String.valueOf(responseCode).getBytes();
     }
 

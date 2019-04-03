@@ -17,8 +17,8 @@ import java.net.SocketTimeoutException;
 import java.security.*;
 import java.security.cert.CertificateException;
 
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_NAME;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class bcServer {
     private static final int MAX_LEN = 100;

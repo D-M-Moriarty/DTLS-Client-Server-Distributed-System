@@ -1,27 +1,26 @@
-package com.darren.ca.server.payload;
+package com.darren.ca.dtls;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
-import java.io.FileInputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
+
 public class DTLS {
     private static final Logger logger = LoggerFactory.getLogger(DTLS.class);
-    private static final String trustFilename = "/Users/darrenmoriarty/Desktop/distributedcomputing/src/main/java/com/darren/ca/server/tls/truststore.jks";
-    private static final String keyFilename = "/Users/darrenmoriarty/Desktop/distributedcomputing/src/main/java/com/darren/ca/server/tls/keystore.jks";
-    private static int MAX_HANDSHAKE_LOOPS = 200;
-    private static int MAX_APP_READ_LOOPS = 60;
+    private static int MAX_HANDSHAKE_LOOPS = 60;
+    private static int MAX_APP_READ_LOOPS = 10;
+    private static int BUFFER_SIZE = 65507;
+    private static int MAXIMUM_PACKET_SIZE = 65507;
     private static int SOCKET_TIMEOUT = 10 * 1000; // in millis
-    private static int BUFFER_SIZE = 60000;
-    private static int MAXIMUM_PACKET_SIZE = 60000;
-    private static ByteBuffer serverApp = ByteBuffer.wrap("Hi Client, I'm Server".getBytes());
-    private static ByteBuffer clientApp = ByteBuffer.wrap("Hi Server, I'm Client".getBytes());
+    private final String trustFilename = this.getClass().getClassLoader().getResourceAsStream("truststore.jks").toString();
+    private final String keyFilename = this.getClass().getClassLoader().getResourceAsStream("keystore.jks").toString();
     private static Exception clientException = null;
     private static Exception serverException = null;
 
@@ -67,6 +66,10 @@ public class DTLS {
         }
     }
 
+    public static DTLS createDTLS() {
+        return new DTLS();
+    }
+
     public SSLEngine createSSLEngine(boolean isClient) throws Exception {
         SSLContext context = getDTLSContext();
         SSLEngine engine = context.createSSLEngine();
@@ -85,15 +88,12 @@ public class DTLS {
         KeyStore ks = KeyStore.getInstance("JKS");
         KeyStore ts = KeyStore.getInstance("JKS");
 
-        char[] passphrase = "123456".toCharArray();
+        char[] passphrase = KEYSTORE_PASSWORD.toCharArray();
 
-        try (FileInputStream fis = new FileInputStream(keyFilename)) {
-            ks.load(fis, passphrase);
-        }
+        ks.load(this.getClass().getClassLoader().getResourceAsStream("keystore.jks"), passphrase);
 
-        try (FileInputStream fis = new FileInputStream(trustFilename)) {
-            ts.load(fis, passphrase);
-        }
+        ts.load(this.getClass().getClassLoader().getResourceAsStream("truststore.jks"), passphrase);
+
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(ks, passphrase);
@@ -402,7 +402,7 @@ public class DTLS {
     List<DatagramPacket> produceApplicationPackets(SSLEngine engine, ByteBuffer source, SocketAddress socketAddr)
             throws Exception {
         List<DatagramPacket> packets = new ArrayList<>();
-        ByteBuffer appNet = ByteBuffer.allocate(60000);
+        ByteBuffer appNet = ByteBuffer.allocate(MAXIMUM_PACKET_SIZE);
         SSLEngineResult r = engine.wrap(source, appNet);
         appNet.flip();
 
@@ -442,7 +442,7 @@ public class DTLS {
                 throw new RuntimeException("Too much loops to produce handshake packets");
             }
 
-            ByteBuffer oNet = ByteBuffer.allocate(60000);
+            ByteBuffer oNet = ByteBuffer.allocate(MAXIMUM_PACKET_SIZE);
             ByteBuffer oApp = ByteBuffer.allocate(0);
             SSLEngineResult r = engine.wrap(oApp, oNet);
             oNet.flip();

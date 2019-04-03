@@ -10,8 +10,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_NAME;
-import static com.darren.ca.server.tls.TLSProperties.KEYSTORE_PASSWORD;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_NAME;
+import static com.darren.ca.client.tls.TLSProperties.KEYSTORE_PASSWORD;
 
 public class ClientTestMobius {
 

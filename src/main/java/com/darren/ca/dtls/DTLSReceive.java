@@ -1,4 +1,4 @@
-package com.darren.ca.server.payload;
+package com.darren.ca.dtls;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
