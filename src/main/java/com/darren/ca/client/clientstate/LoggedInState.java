@@ -70,31 +70,31 @@ public class LoggedInState extends AbstractState implements Client {
 //        get the file to be downloaded
         File file = fileChooser.getSelectedFile();
 //        send download request to server and get response
-        String echo = getDownloadResponse(fileChooser);
-        logger.debug(echo);
+        String downloadResponse = getDownloadResponse(fileChooser);
+        logger.debug(downloadResponse);
 //        extract the response code from the response
-        short response = Short.parseShort(echo.substring(0, OPERATION_INDEX));
-//        extract the bytes to a string
-        String byteString = echo.substring(OPERATION_INDEX);
+        short responseCode = Short.parseShort(downloadResponse.substring(0, OPERATION_INDEX));
+//        extract the bytes of the file to a string
+        String byteFileString = downloadResponse.substring(OPERATION_INDEX);
 //        convert the string of bytes to a byte[]
-        byte[] b = byteString.getBytes();
-        logger.debug(Arrays.toString(b));
+        byte[] bytes = byteFileString.getBytes();
+        logger.debug(Arrays.toString(bytes));
 //        write the file to the users folder
-        writeToUserFolder(b, file);
+        writeToUserFolder(bytes, file);
 //        inform the user the download is complete
-        outPutToGui(fileTransferClient.getGuiForm(), response);
+        outPutToGui(fileTransferClient.getGuiForm(), responseCode);
     }
 
     private short getUploadResponse(File file, byte[] pflBytes) throws IOException {
-        byte[] dataBytes = getBytes(file);
-        byte[] combinesBytes = getBytes(pflBytes, dataBytes);
+        byte[] fileBytes = getBytes(file);
+        byte[] combinesBytes = getBytes(pflBytes, fileBytes);
         return getUploadResponse(combinesBytes);
     }
 
-    private short getUploadResponse(byte[] combinesBytes) throws IOException {
-        String echo = CLIENTSERVICE.sendFileData(combinesBytes);
-        logger.debug(echo);
-        return Short.parseShort(echo.substring(0, 3));
+    private short getUploadResponse(byte[] combinesBytes) {
+        String uploadResponse = CLIENTSERVICE.sendFileData(combinesBytes);
+        logger.debug(uploadResponse);
+        return Short.parseShort(uploadResponse.substring(0, OPERATION_INDEX));
     }
 
     private String getDownloadResponse(@NotNull JFileChooser fc) {
@@ -103,13 +103,13 @@ public class LoggedInState extends AbstractState implements Client {
         return CLIENTSERVICE.sendClientRequest(download);
     }
 
-    private void writeToUserFolder(byte[] b, File file) {
+    private void writeToUserFolder(byte[] fileBytes, File file) {
         String userFolder = DESKTOP_DEST + fileTransferClient.getUsername() + FOLDER_EXT;
         String filename = file.getName();
-        String all = userFolder + filename;
+        String fileNameAndPath = userFolder + filename;
         new File(userFolder).mkdirs();
         try {
-            Files.write(Paths.get(all), b);
+            Files.write(Paths.get(fileNameAndPath), fileBytes);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

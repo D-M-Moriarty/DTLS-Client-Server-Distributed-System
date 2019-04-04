@@ -1,6 +1,7 @@
 package com.darren.ca.client.request;
 
 import com.darren.ca.dtls.DTLS;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +17,6 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
 
     public ClientDTLSSocket() throws SocketException {
         this.socket = new DatagramSocket();
-        dtls = DTLS.createDTLS();
-        try {
-            sslEngine = dtls.createSSLEngine(true);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
     }
 
     @Override
@@ -36,10 +31,6 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
         dtls = DTLS.createDTLS();
         try {
             sslEngine = dtls.createSSLEngine(true);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-        try {
             dtls.handshake(sslEngine, socket, serverAddress, "Client");
             dtls.deliverAppData(
                     sslEngine,
@@ -54,13 +45,19 @@ public class ClientDTLSSocket implements ClientSocketDatagram {
 
     @Override
     public String receiveServerResponse() {
-        ByteBuffer dataBuffer = ByteBuffer.allocate(65507);
         try {
-            dataBuffer = dtls.receiveAppData(sslEngine, socket, null).getByteBuffer();
+            return getDTLSMessage();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        return dataBuffer == null ? "" : new String(dataBuffer.array()).replaceAll("\0", "");
+        return "";
+    }
+
+    @NotNull
+    private String getDTLSMessage() throws Exception {
+        // gets the buffer data in a byte array and returns it as a string
+        return new String(dtls.receiveAppData(sslEngine, socket)
+                .getBufferBytes()).replaceAll("\0", "");
     }
 
     @Override

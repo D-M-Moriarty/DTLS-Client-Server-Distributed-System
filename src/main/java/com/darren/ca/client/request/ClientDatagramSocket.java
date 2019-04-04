@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class ClientDatagramSocket implements ClientSocketDatagram {
-    private static final int MAX_LENGTH = 60000;
+    private static final int MAX_LENGTH = 65507;
     private DatagramSocket datagramSocket;
 
     public ClientDatagramSocket() throws SocketException {

@@ -82,7 +82,7 @@ public class DTLS {
         return engine;
     }
 
-    // get DTSL context
+    // get DTLS context
     private SSLContext getDTLSContext() throws Exception {
         KeyStore ks = KeyStore.getInstance("JKS");
         KeyStore ts = KeyStore.getInstance("JKS");
@@ -108,7 +108,7 @@ public class DTLS {
     }
 
     // receive application data
-    public DTLSReceive receiveAppData(SSLEngine engine, DatagramSocket socket, ByteBuffer expectedApp)
+    public DTLSReceive receiveAppData(SSLEngine engine, DatagramSocket socket)
             throws Exception {
         byte[] buf = new byte[BUFFER_SIZE];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -126,7 +126,6 @@ public class DTLS {
             SSLEngineResult rs = engine.unwrap(netBuffer, recBuffer);
             recBuffer.flip();
             if (recBuffer.remaining() != 0) {
-                System.out.println(new String(recBuffer.array()));
                 dtlsReceive.setByteBuffer(recBuffer);
                 printHex("Received application data", recBuffer);
                 if (!recBuffer.equals(recBuffer)) {
@@ -143,7 +142,7 @@ public class DTLS {
     // handshake
     public void serverHandshake(SSLEngine engine, DatagramSocket socket, String side)
             throws Exception {
-        SocketAddress peerAddr = null;
+        SocketAddress clientAddress = null;
         boolean endLoops = false;
         int loops = MAX_HANDSHAKE_LOOPS;
         engine.beginHandshake();
@@ -164,12 +163,12 @@ public class DTLS {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     try {
                         socket.receive(packet);
-                        peerAddr = new InetSocketAddress(packet.getAddress(), packet.getPort());
+                        clientAddress = new InetSocketAddress(packet.getAddress(), packet.getPort());
                     } catch (SocketTimeoutException ste) {
                         logger.debug(side + "Warning: " + ste);
 
                         List<DatagramPacket> packets = new ArrayList<>();
-                        boolean finished = onReceiveTimeout(engine, peerAddr, side, packets);
+                        boolean finished = onReceiveTimeout(engine, clientAddress, side, packets);
 
                         logger.debug(side + "Reproduced " + packets.size() + " packets");
                         for (DatagramPacket p : packets) {
@@ -220,7 +219,7 @@ public class DTLS {
                 }
             } else if (hs == SSLEngineResult.HandshakeStatus.NEED_WRAP) {
                 List<DatagramPacket> packets = new ArrayList<>();
-                boolean finished = produceHandshakePackets(engine, peerAddr, side, packets);
+                boolean finished = produceHandshakePackets(engine, clientAddress, side, packets);
                 logger.debug(side + "Produced " + packets.size() + " packets");
                 for (DatagramPacket p : packets) {
                     socket.send(p);
@@ -405,7 +404,6 @@ public class DTLS {
         ByteBuffer appNet = ByteBuffer.allocate(MAXIMUM_PACKET_SIZE);
         SSLEngineResult r = engine.wrap(source, appNet);
         appNet.flip();
-
         SSLEngineResult.Status rs = r.getStatus();
         if (rs == SSLEngineResult.Status.BUFFER_OVERFLOW) {
             // the client maximum fragment size config does not work?
@@ -420,7 +418,6 @@ public class DTLS {
         } else {
             throw new Exception("Can't reach here, result is " + rs);
         }
-
         // SSLEngineResult.Status.OK:
         if (appNet.hasRemaining()) {
             byte[] ba = new byte[appNet.remaining()];
@@ -428,7 +425,6 @@ public class DTLS {
             DatagramPacket packet = new DatagramPacket(ba, ba.length, socketAddr);
             packets.add(packet);
         }
-
         return packets;
     }
 

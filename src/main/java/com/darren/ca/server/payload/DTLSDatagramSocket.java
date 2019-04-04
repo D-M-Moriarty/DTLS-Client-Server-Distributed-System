@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSession;
 import java.net.*;
 import java.nio.ByteBuffer;
 
@@ -15,7 +14,6 @@ public class DTLSDatagramSocket implements ServerSocketDatagram {
     private static final Logger logger = LoggerFactory.getLogger(DTLSDatagramSocket.class);
     private SSLEngine sslEngine;
     private DatagramSocket socket;
-    private ByteBuffer clientApp;
     private DTLS dtls;
     private DatagramPacket datagramPacket = null;
 
@@ -26,20 +24,14 @@ public class DTLSDatagramSocket implements ServerSocketDatagram {
     @Override
     public DataPacket receiveMessageAndSender() throws Exception {
         dtls = DTLS.createDTLS();
-        try {
-            sslEngine = dtls.createSSLEngine(false);
-            SSLSession sslSession = sslEngine.getSession();
-            clientApp = ByteBuffer.allocate(sslSession.getApplicationBufferSize());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
+        sslEngine = dtls.createSSLEngine(false);
         dtls.serverHandshake(sslEngine, socket, "Server");
-        DTLSReceive dtlsReceive = dtls.receiveAppData(sslEngine, socket, clientApp);
+        DTLSReceive dtlsReceive = dtls.receiveAppData(sslEngine, socket);
         datagramPacket = dtlsReceive.getDatagramPacket();
         return new DataPacket(
                 datagramPacket.getAddress(),
                 datagramPacket.getPort(),
-                new String(dtlsReceive.getByteBuffer().array()).replaceAll("\0", "")
+                new String(dtlsReceive.getBufferBytes()).replaceAll("\0", "")
         );
     }
 
@@ -50,7 +42,10 @@ public class DTLSDatagramSocket implements ServerSocketDatagram {
                     sslEngine,
                     socket,
                     ByteBuffer.wrap(file),
-                    new InetSocketAddress(InetAddress.getLocalHost(), datagramPacket.getPort())
+                    new InetSocketAddress(
+                            datagramPacket.getAddress(),
+                            datagramPacket.getPort()
+                    )
             );
         } catch (Exception e) {
             logger.error(e.getMessage());

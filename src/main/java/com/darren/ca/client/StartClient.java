@@ -5,7 +5,6 @@ class StartClient {
     private StartClient() {
     }
 
-
     public static void main(String[] args) {
         new FileTransferClient();
     }

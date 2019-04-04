@@ -18,7 +18,7 @@ class StartServer {
         Server server = Server.getServer();
 //        Create request factory
         RequestFactory factory = new StandardServerRequest();
-//        Create appropriate socket
+//        Create appropriate socket - choice between ServerDatagramSocket or DTLSDatagramSocket
 //        default port used for server
         ServerSocketDatagram socketDatagram = new DTLSDatagramSocket(SERVER_PORT);
 //        Start server
