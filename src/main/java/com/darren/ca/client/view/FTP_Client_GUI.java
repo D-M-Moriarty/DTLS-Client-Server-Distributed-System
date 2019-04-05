@@ -21,10 +21,11 @@ public class FTP_Client_GUI {
     private JButton logoutBtn;
     private JButton chooseFileBtn;
     private JButton downloadBtn;
+    private JTextField a3000TextField;
     private final JFrame jFrame;
 
     public FTP_Client_GUI(Client client) {
-        jFrame = new JFrame("FTP Server");
+        jFrame = new JFrame("FTP Client");
         jFrame.add(rootPanel);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -40,17 +41,17 @@ public class FTP_Client_GUI {
 //        attach listeners to buttons
         connectBtn.addActionListener(e ->
 //                perform client login function
-                client.login(
-                        usernameTextField.getText(),
-                        String.valueOf(passwordField.getPassword())
-                )
+                        client.login(
+                                usernameTextField.getText(),
+                                String.valueOf(passwordField.getPassword())
+                        )
         );
         logoutBtn.addActionListener(e ->
 //                perform client logout function
-                client.logout(
-                        usernameTextField.getText(),
-                        String.valueOf(passwordField.getPassword())
-                )
+                        client.logout(
+                                usernameTextField.getText(),
+                                String.valueOf(passwordField.getPassword())
+                        )
         );
 //        upload function
         chooseFileBtn.addActionListener(e -> client.uploadFile());
@@ -65,4 +66,5 @@ public class FTP_Client_GUI {
     public void setServerOutputTxtArea(String text) {
         serverOutputTxtArea.setText(text);
     }
+
 }

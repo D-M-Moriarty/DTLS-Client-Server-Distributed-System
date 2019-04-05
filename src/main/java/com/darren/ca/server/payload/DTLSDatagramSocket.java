@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLEngine;
+import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 
@@ -22,7 +23,7 @@ public class DTLSDatagramSocket implements ServerSocketDatagram {
     }
 
     @Override
-    public DataPacket receiveMessageAndSender() throws Exception {
+    public DataPacket receiveMessageAndSender() throws IOException {
         dtls = DTLS.createDTLS();
         sslEngine = dtls.createSSLEngine(false);
         dtls.serverHandshake(sslEngine, socket, "Server");
@@ -36,19 +37,16 @@ public class DTLSDatagramSocket implements ServerSocketDatagram {
     }
 
     @Override
-    public void sendFile(InetAddress receiverHost, int receiverPort, byte[] file) {
-        try {
-            dtls.deliverAppData(
-                    sslEngine,
-                    socket,
-                    ByteBuffer.wrap(file),
-                    new InetSocketAddress(
-                            datagramPacket.getAddress(),
-                            datagramPacket.getPort()
-                    )
-            );
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
+    public void sendFile(InetAddress receiverHost, int receiverPort, byte[] file) throws IOException {
+        dtls.deliverAppData(
+                sslEngine,
+                socket,
+                ByteBuffer.wrap(file),
+                new InetSocketAddress(
+                        datagramPacket.getAddress(),
+                        datagramPacket.getPort()
+                )
+        );
+
     }
 }

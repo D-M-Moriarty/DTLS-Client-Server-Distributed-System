@@ -50,7 +50,7 @@ public class LoggedInState extends AbstractState implements Client {
         File file = fileTransferClient.getUploadFile();
         // create a string with the protocol filename and length
         String protocolFilenameLength = makeUploadFileName(file);
-        logger.debug(protocolFilenameLength);
+//        logger.debug(protocolFilenameLength);
         // convert the string to a byte array
         byte[] pflBytes = protocolFilenameLength.getBytes();
         try {
@@ -136,9 +136,9 @@ public class LoggedInState extends AbstractState implements Client {
 
     private byte[] getBytes(@NotNull File file) throws IOException {
         Path path = file.toPath();
-        logger.debug(String.valueOf(path));
+//        logger.debug(String.valueOf(path));
         byte[] dataBytes = Files.readAllBytes(path);
-        logger.debug(Arrays.toString(dataBytes));
+//        logger.debug(Arrays.toString(dataBytes));
         return dataBytes;
     }
 

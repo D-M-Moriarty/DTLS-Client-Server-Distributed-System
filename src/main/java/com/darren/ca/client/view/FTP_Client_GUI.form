@@ -33,10 +33,29 @@
             <constraints/>
             <properties>
               <columns value="10"/>
+              <editable value="false"/>
+              <enabled value="false"/>
               <horizontalAlignment value="10"/>
               <minimumSize width="116" height="26"/>
               <preferredSize width="116" height="26"/>
-              <text value=""/>
+              <text value="localhost"/>
+            </properties>
+          </component>
+          <component id="f6480" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value="Port: "/>
+            </properties>
+          </component>
+          <component id="9f3e8" class="javax.swing.JTextField" binding="a3000TextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <editable value="false"/>
+              <enabled value="false"/>
+              <horizontalAlignment value="10"/>
+              <minimumSize width="30" height="26"/>
+              <preferredSize width="60" height="26"/>
+              <text value="3000"/>
             </properties>
           </component>
           <component id="915d9" class="javax.swing.JLabel" binding="usernameJLabel">
