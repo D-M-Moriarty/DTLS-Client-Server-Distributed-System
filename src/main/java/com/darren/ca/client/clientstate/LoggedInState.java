@@ -103,7 +103,7 @@ public class LoggedInState extends AbstractState implements Client {
         return CLIENTSERVICE.sendClientRequest(download);
     }
 
-    private void writeToUserFolder(byte[] fileBytes, File file) {
+    private void writeToUserFolder(byte[] fileBytes, @NotNull File file) {
         String userFolder = DESKTOP_DEST + fileTransferClient.getUsername() + FOLDER_EXT;
         String filename = file.getName();
         String fileNameAndPath = userFolder + filename;
